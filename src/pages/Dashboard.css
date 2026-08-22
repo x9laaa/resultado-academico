@@ -1,0 +1,40 @@
+.pagina-panel {
+  max-width: 900px;
+  min-height: 100vh;
+  padding: 48px 32px;
+  margin: 0 auto;
+}
+
+.tarjeta-panel {
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid #d9dee3;
+  border-radius: 6px;
+}
+
+.tarjeta-panel h1 {
+  margin-top: 0;
+  font-size: 27px;
+}
+
+.tarjeta-panel p {
+  color: #52606b;
+}
+
+.enlace-panel {
+  display: inline-block;
+  margin-top: 12px;
+  color: #28638a;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.enlace-panel:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .pagina-panel {
+    padding: 24px 16px;
+  }
+}

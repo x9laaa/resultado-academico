@@ -1,0 +1,77 @@
+.pagina-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-contenedor {
+  width: 100%;
+  max-width: 380px;
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid #d9dee3;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.login-contenedor h1 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 25px;
+}
+
+.login-contenedor form {
+  display: grid;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #b8c1c9;
+  border-radius: 4px;
+}
+
+.campo input:focus,
+.campo select:focus {
+  outline: 2px solid #b8d7ef;
+  border-color: #3175a4;
+}
+
+button {
+  padding: 9px 14px;
+  color: #ffffff;
+  cursor: pointer;
+  background: #28638a;
+  border: 0;
+  border-radius: 4px;
+}
+
+button:hover {
+  background: #1e4e6e;
+}
+
+button:disabled {
+  cursor: wait;
+  background: #8ba1b0;
+}
+
+.mensaje {
+  margin: 0;
+  padding: 9px;
+  font-size: 14px;
+  color: #8b2d2d;
+  background: #fff1f1;
+  border-left: 3px solid #bd5555;
+}
