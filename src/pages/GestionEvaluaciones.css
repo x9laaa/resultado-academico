@@ -1,0 +1,126 @@
+.pagina-evaluaciones{
+max-width:1000px;
+padding:40px 24px;
+margin:0 auto;
+}
+
+.pagina-evaluaciones h1{
+margin-bottom:8px;
+}
+
+.volver{
+color:#28638a;
+text-decoration:none;
+}
+
+.volver:hover{
+text-decoration:underline;
+}
+
+.seccion-evaluaciones{
+padding:24px;
+margin-top:24px;
+background:#ffffff;
+border:1px solid #d9dee3;
+border-radius:6px;
+}
+
+.seccion-evaluaciones h2{
+margin-top:0;
+font-size:21px;
+}
+
+.formulario-evaluaciones{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:16px;
+}
+
+.formulario-evaluaciones div{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.formulario-evaluaciones label{
+font-size:14px;
+font-weight:500;
+color:#45535e;
+}
+
+.formulario-evaluaciones input,
+.formulario-evaluaciones select{
+width:100%;
+padding:10px;
+border:1px solid #d9dee3;
+border-radius:4px;
+font-size:15px;
+box-sizing:border-box;
+}
+
+.formulario-evaluaciones input:focus,
+.formulario-evaluaciones select:focus{
+outline:none;
+border-color:#28638a;
+}
+
+.formulario-evaluaciones button{
+grid-column:1/-1;
+justify-self:start;
+padding:10px 18px;
+background:#28638a;
+color:#ffffff;
+border:none;
+border-radius:4px;
+cursor:pointer;
+font-size:15px;
+}
+
+.formulario-evaluaciones button:hover{
+background:#1f5070;
+}
+
+.tabla-contenedor{
+overflow-x:auto;
+}
+
+.tabla-evaluaciones{
+width:100%;
+border-collapse:collapse;
+}
+
+.tabla-evaluaciones th,
+.tabla-evaluaciones td{
+padding:11px 10px;
+text-align:left;
+border-bottom:1px solid #e2e6e9;
+}
+
+.tabla-evaluaciones th{
+font-size:14px;
+color:#45535e;
+background:#f5f7f8;
+}
+
+.tabla-evaluaciones td{
+font-size:15px;
+}
+
+@media(max-width:600px){
+.pagina-evaluaciones{
+padding:24px 16px;
+}
+
+.seccion-evaluaciones{
+padding:18px;
+}
+
+.formulario-evaluaciones{
+grid-template-columns:1fr;
+}
+
+.formulario-evaluaciones button{
+grid-column:auto;
+width:100%;
+}
+}

@@ -1,0 +1,83 @@
+.pagina-resultados {
+  max-width: 1200px;
+  padding: 40px 24px;
+  margin: 0 auto;
+}
+.pagina-resultados h1 {
+  margin-bottom: 8px;
+}
+.volver {
+  color: #28638a;
+  text-decoration: none;
+}
+.volver:hover {
+  text-decoration: underline;
+}
+.seccion-resultados {
+  padding: 24px;
+  margin-top: 24px;
+  background: #ffffff;
+  border: 1px solid #d9dee3;
+  border-radius: 6px;
+}
+.seccion-resultados h2 {
+  margin-top: 0;
+  font-size: 21px;
+}
+.seleccion-resultados {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.seleccion-resultados div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.seleccion-resultados select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d9dee3;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.tabla-contenedor {
+  overflow-x: auto;
+}
+.tabla-resultados {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tabla-resultados th,
+.tabla-resultados td {
+  padding: 11px 10px;
+  text-align: left;
+  border-bottom: 1px solid #e2e6e9;
+}
+.tabla-resultados th {
+  font-size: 14px;
+  color: #45535e;
+  background: #f5f7f8;
+}
+.tabla-resultados input {
+  width: 60px;
+  padding: 8px;
+  border: 1px solid #d9dee3;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.seccion-resultados button {
+  margin-top: 20px;
+  padding: 10px 16px;
+}
+@media (max-width: 600px) {
+  .pagina-resultados {
+    padding: 24px 16px;
+  }
+  .seccion-resultados {
+    padding: 18px;
+  }
+  .seleccion-resultados {
+    grid-template-columns: 1fr;
+  }
+}

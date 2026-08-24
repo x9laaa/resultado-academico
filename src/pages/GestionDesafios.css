@@ -1,0 +1,257 @@
+.pagina-desafios{
+max-width:1000px;
+padding:40px 24px;
+margin:0 auto;
+}
+
+.pagina-desafios h1{
+margin-bottom:8px;
+}
+
+.volver{
+color:#28638a;
+text-decoration:none;
+}
+
+.volver:hover{
+text-decoration:underline;
+}
+
+.seccion-desafios{
+padding:24px;
+margin-top:24px;
+background:#ffffff;
+border:1px solid #d9dee3;
+border-radius:6px;
+}
+
+.seccion-desafios h2{
+margin-top:0;
+font-size:21px;
+}
+
+.formulario-desafios{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:16px;
+}
+
+.formulario-desafios label{
+display:block;
+margin-bottom:6px;
+}
+
+.formulario-desafios input,
+.formulario-desafios select{
+width:100%;
+padding:10px;
+box-sizing:border-box;
+border:1px solid #d9dee3;
+border-radius:4px;
+}
+
+.informacion-desafio{
+grid-column:1/-1;
+padding:12px;
+background:#f5f7f8;
+border:1px solid #d9dee3;
+border-radius:4px;
+}
+
+.clasificacion-desafio{
+grid-column:1/-1;
+padding:24px;
+margin-top:8px;
+background:#fafafa;
+border:1px solid #d9dee3;
+border-radius:6px;
+}
+
+.clasificacion-desafio h3{
+margin:0 0 24px;
+font-size:18px;
+}
+
+.numeros-superiores{
+display:flex;
+justify-content:space-between;
+margin-bottom:8px;
+font-size:14px;
+font-weight:600;
+}
+
+.barra-clasificacion{
+display:flex;
+width:100%;
+height:50px;
+overflow:hidden;
+border:1px solid #d9dee3;
+border-radius:5px;
+box-sizing:border-box;
+}
+
+.rango{
+display:flex;
+align-items:center;
+justify-content:center;
+min-width:0;
+padding:0 6px;
+box-sizing:border-box;
+font-size:13px;
+font-weight:600;
+border-right:1px solid #ffffff;
+}
+
+.rango:last-child{
+border-right:none;
+}
+
+.insuficiente{
+background:#f1d5d5;
+}
+
+.adecuado{
+background:#f4ebc9;
+}
+
+.logrado{
+background:#d8ead8;
+}
+
+.controles-clasificacion{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:24px;
+margin-top:24px;
+}
+
+.slider-grupo label{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;
+font-size:14px;
+}
+
+.slider-grupo strong{
+font-size:15px;
+}
+
+.slider-grupo input{
+width:100%;
+padding:0;
+cursor:pointer;
+}
+
+.resumen-rangos{
+display:grid;
+grid-template-columns:repeat(3,minmax(0,1fr));
+gap:12px;
+margin-top:24px;
+}
+
+.resumen-rangos div{
+display:flex;
+flex-direction:column;
+gap:6px;
+padding:12px;
+background:#ffffff;
+border:1px solid #d9dee3;
+border-radius:5px;
+}
+
+.resumen-rangos strong{
+font-size:14px;
+}
+
+.resumen-rangos span{
+font-size:14px;
+color:#45535e;
+}
+
+.mensaje-clasificacion{
+margin:0;
+color:#45535e;
+}
+
+.botones-desafio{
+grid-column:1/-1;
+display:flex;
+gap:10px;
+}
+
+.botones-desafio button{
+padding:10px 16px;
+border:1px solid #28638a;
+border-radius:4px;
+background:#28638a;
+color:#ffffff;
+cursor:pointer;
+}
+
+.botones-desafio button:last-child{
+background:#ffffff;
+color:#28638a;
+}
+
+.tabla-contenedor{
+overflow-x:auto;
+}
+
+.tabla-desafios{
+width:100%;
+border-collapse:collapse;
+}
+
+.tabla-desafios th,
+.tabla-desafios td{
+padding:11px 10px;
+text-align:left;
+border-bottom:1px solid #e2e6e9;
+}
+
+.tabla-desafios th{
+font-size:14px;
+color:#45535e;
+background:#f5f7f8;
+}
+
+.tabla-desafios button{
+margin-right:6px;
+padding:7px 10px;
+border:1px solid #d9dee3;
+border-radius:4px;
+background:#ffffff;
+cursor:pointer;
+}
+
+@media(max-width:600px){
+.pagina-desafios{
+padding:24px 16px;
+}
+
+.seccion-desafios{
+padding:18px;
+}
+
+.formulario-desafios{
+grid-template-columns:1fr;
+}
+
+.controles-clasificacion{
+grid-template-columns:1fr;
+}
+
+.resumen-rangos{
+grid-template-columns:1fr;
+}
+
+.rango{
+font-size:11px;
+padding:0 3px;
+}
+
+.numeros-superiores{
+font-size:12px;
+}
+}

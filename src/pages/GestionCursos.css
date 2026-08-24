@@ -1,0 +1,130 @@
+.pagina-cursos {
+    max-width: 1000px;
+    padding: 40px 24px;
+    margin: 0 auto;
+
+}
+
+.pagina-cursos h1 {
+    margin-bottom: 8px;
+}
+
+.volver {
+    color: #28638a;
+    text-decoration: none;
+}
+
+.volver:hover {
+    text-decoration: underline;
+}
+
+.seccion-cursos {
+    padding: 24px;
+    margin-top: 24px;
+    background: #ffffff;
+    border: 1px solid #d9dee3;
+    border-radius: 6px;
+}
+
+.seccion-cursos h2 {
+    margin-top: 0;
+    font-size: 21px;
+}
+
+.formulario-cursos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-items: end;
+}
+
+.formulario-cursos select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d9dee3;
+    border-radius: 4px;
+}
+
+.formulario-cursos button {
+    justify-self: start;
+
+}
+
+.tabla-contenedor {
+    overflow-x: auto;
+
+}
+
+.tabla-cursos {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-cursos th,
+.tabla-cursos td {
+    padding: 11px 10px;
+    text-align: left;
+    border-bottom: 1px solid #e2e6e9;
+}
+
+.tabla-cursos th {
+    font-size: 14px;
+    color: #45535e;
+    background: #f5f7f8;
+}
+
+.botones-cursos {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.botones-cursos button {
+    padding: 7px 10px;
+}
+
+.formulario-profesor {
+    display: flex;
+    gap: 12px;
+    align-items: end;
+}
+
+.formulario-profesor select {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #d9dee3;
+    border-radius: 4px;
+}
+
+.formulario-editar {
+    display: flex;
+    gap: 12px;
+    align-items: end;
+}
+
+.formulario-editar select {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #d9dee3;
+    border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+    .pagina-cursos {
+        padding: 24px 16px;
+    }
+
+    .seccion-cursos {
+        padding: 18px;
+    }
+
+    .formulario-cursos {
+        grid-template-columns: 1fr;
+    }
+
+    .formulario-profesor,
+    .formulario-editar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
