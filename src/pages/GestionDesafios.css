@@ -58,6 +58,20 @@ border:1px solid #d9dee3;
 border-radius:4px;
 }
 
+.clasificacion{
+grid-column:1/-1;
+padding:24px;
+margin-top:8px;
+background:#fafafa;
+border:1px solid #d9dee3;
+border-radius:6px;
+}
+
+.clasificacion h3{
+margin:0 0 24px;
+font-size:18px;
+}
+
 .clasificacion-desafio{
 grid-column:1/-1;
 padding:24px;
@@ -153,20 +167,102 @@ margin-top:24px;
 .resumen-rangos div{
 display:flex;
 flex-direction:column;
-gap:6px;
-padding:12px;
-background:#ffffff;
-border:1px solid #d9dee3;
-border-radius:5px;
+gap:4px;
+padding:14px 16px;
+border-radius:6px;
 }
 
 .resumen-rangos strong{
 font-size:14px;
+font-weight:600;
 }
 
 .resumen-rangos span{
 font-size:14px;
-color:#45535e;
+}
+
+.resumen-rangos div:nth-child(1){
+background:#fbe4e2;
+}
+
+.resumen-rangos div:nth-child(1) strong,
+.resumen-rangos div:nth-child(1) span{
+color:#9a2f26;
+}
+
+.resumen-rangos div:nth-child(2){
+background:#faf0d4;
+}
+
+.resumen-rangos div:nth-child(2) strong,
+.resumen-rangos div:nth-child(2) span{
+color:#8a6a12;
+}
+
+.resumen-rangos div:nth-child(3){
+background:#e0f0e2;
+}
+
+.resumen-rangos div:nth-child(3) strong,
+.resumen-rangos div:nth-child(3) span{
+color:#2f6b3a;
+}
+
+.resultado-rangos{
+display:grid;
+grid-template-columns:repeat(3,minmax(0,1fr));
+gap:12px;
+margin-top:16px;
+}
+
+.resultado-rangos div{
+display:flex;
+flex-direction:column;
+gap:4px;
+padding:14px 16px;
+border-radius:6px;
+}
+
+.resultado-rangos strong{
+font-size:14px;
+font-weight:600;
+}
+
+.resultado-rangos span{
+font-size:14px;
+}
+
+.resultado-rangos div:nth-child(1){
+background:#fbe4e2;
+}
+
+.resultado-rangos div:nth-child(1) strong,
+.resultado-rangos div:nth-child(1) span{
+color:#9a2f26;
+}
+
+.resultado-rangos div:nth-child(2){
+background:#faf0d4;
+}
+
+.resultado-rangos div:nth-child(2) strong,
+.resultado-rangos div:nth-child(2) span{
+color:#8a6a12;
+}
+
+.resultado-rangos div:nth-child(3){
+background:#e0f0e2;
+}
+
+.resultado-rangos div:nth-child(3) strong,
+.resultado-rangos div:nth-child(3) span{
+color:#2f6b3a;
+}
+
+@media(max-width:600px){
+.resultado-rangos{
+grid-template-columns:1fr;
+}
 }
 
 .mensaje-clasificacion{

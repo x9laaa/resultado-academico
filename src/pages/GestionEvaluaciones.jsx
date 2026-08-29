@@ -3,203 +3,141 @@ import { collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore
 import { Link } from 'react-router-dom'
 import { db } from '../config'
 import './GestionEvaluaciones.css'
+import Navbar from '../components/Navbar'
 
 function GestionEvaluaciones() {
-    const [cursos, setCursos] = useState([])
-    const [desafios, setDesafios] = useState([])
-    const [curso, setCurso] = useState('')
-    const [desafio, setDesafio] = useState('')
-    const [fechaAplicacion, setFechaAplicacion] = useState('')
-    const [anio, setAnio] = useState(new Date().getFullYear())
-    const [evaluaciones, setEvaluaciones] = useState([])
+  const [cursos, setCursos] = useState([])
+  const [desafios, setDesafios] = useState([])
+  const [curso, setCurso] = useState('')
+  const [desafio, setDesafio] = useState('')
+  const [fechaAplicacion, setFechaAplicacion] = useState('')
+  const [anio, setAnio] = useState(new Date().getFullYear())
+  const [evaluaciones, setEvaluaciones] = useState([])
 
-    useEffect(() => {
-        cargarCursos()
-        cargarDesafios()
-        cargarEvaluaciones()
-    }, [])
+  useEffect(() => {
+    cargarCursos()
+    cargarDesafios()
+    cargarEvaluaciones()
+  }, [])
 
-    const cargarCursos = async () => {
-        const datos = await getDocs(collection(db, 'cursos'))
+  const cargarColeccion = async nombreColeccion => {
+    const datos = await getDocs(collection(db, nombreColeccion))
+    return datos.docs.map(item => ({ id: item.id, ...item.data() }))
+  }
 
-        const lista = datos.docs.map(item => ({
-            id: item.id,
-            ...item.data()
-        }))
+  const cargarCursos = async () => setCursos(await cargarColeccion('cursos'))
+  const cargarDesafios = async () => setDesafios(await cargarColeccion('desafios'))
+  const cargarEvaluaciones = async () => setEvaluaciones(await cargarColeccion('evaluaciones'))
 
-        setCursos(lista)
+  const limpiarFormulario = () => {
+    setCurso('')
+    setDesafio('')
+    setFechaAplicacion('')
+    setAnio(new Date().getFullYear())
+  }
+
+  const registrarEvaluacion = async e => {
+    e.preventDefault()
+
+    if (!curso || !desafio || !fechaAplicacion) {
+      alert('Complete todos los campos')
+      return
     }
 
-    const cargarDesafios = async () => {
-        const datos = await getDocs(collection(db, 'desafios'))
+    await addDoc(collection(db, 'evaluaciones'), {
+      id_curso: curso,
+      id_desafio: desafio,
+      fecha_aplicacion: fechaAplicacion,
+      anio: Number(anio),
+      fecha_creacion: serverTimestamp()
+    })
 
-        const lista = datos.docs.map(item => ({
-            id: item.id,
-            ...item.data()
-        }))
+    alert('Evaluación registrada correctamente')
+    limpiarFormulario()
+    cargarEvaluaciones()
+  }
 
-        setDesafios(lista)
-    }
+  // Busca un item por id en una lista ya cargada (cursos, desafíos) y
+  // devuelve el valor de un campo suyo. La usan obtenerCurso y obtenerDesafio.
+  const buscarEnLista = (lista, id, campo) => lista.find(item => item.id === id)?.[campo] || 'No encontrado'
 
-    const cargarEvaluaciones = async () => {
-        const datos = await getDocs(collection(db, 'evaluaciones'))
+  const obtenerCurso = id => buscarEnLista(cursos, id, 'nombre_curso')
+  const obtenerDesafio = id => buscarEnLista(desafios, id, 'nombre')
 
-        const lista = datos.docs.map(item => ({
-            id: item.id,
-            ...item.data()
-        }))
+  return (
+    <>
+    <Navbar />
+    <div className="pagina-evaluaciones">
+      <h1>Gestión de Evaluaciones</h1>
 
-        setEvaluaciones(lista)
-    }
+      <section className="seccion-evaluaciones">
+        <h2>Registrar evaluación</h2>
 
-    const registrarEvaluacion = async (e) => {
-        e.preventDefault()
+        <form className="formulario-evaluaciones" onSubmit={registrarEvaluacion}>
+          <div>
+            <label>Curso</label>
+            <select value={curso} onChange={e => setCurso(e.target.value)} required>
+              <option value="">Seleccione un curso</option>
+              {cursos.map(item => (
+                <option key={item.id} value={item.id}>{item.nombre_curso}</option>
+              ))}
+            </select>
+          </div>
 
-        if (!curso || !desafio || !fechaAplicacion) {
-            alert('Complete todos los campos')
-            return
-        }
+          <div>
+            <label>Desafío</label>
+            <select value={desafio} onChange={e => setDesafio(e.target.value)} required>
+              <option value="">Seleccione un desafío</option>
+              {desafios.map(item => (
+                <option key={item.id} value={item.id}>{item.nombre} - {item.tipo}</option>
+              ))}
+            </select>
+          </div>
 
-        await addDoc(collection(db, 'evaluaciones'), {
-            id_curso: curso,
-            id_desafio: desafio,
-            fecha_aplicacion: fechaAplicacion,
-            anio: Number(anio),
-            fecha_creacion: serverTimestamp()
-        })
+          <div>
+            <label>Fecha de aplicación</label>
+            <input type="date" value={fechaAplicacion} onChange={e => setFechaAplicacion(e.target.value)} required />
+          </div>
 
-        alert('Evaluación registrada correctamente')
+          <div>
+            <label>Año</label>
+            <input type="number" value={anio} onChange={e => setAnio(e.target.value)} required />
+          </div>
 
-        setCurso('')
-        setDesafio('')
-        setFechaAplicacion('')
-        setAnio(new Date().getFullYear())
+          <button type="submit">Registrar evaluación</button>
+        </form>
+      </section>
 
-        cargarEvaluaciones()
-    }
+      <section className="seccion-evaluaciones">
+        <h2>Evaluaciones registradas</h2>
 
-    const obtenerCurso = id => {
-        const encontrado = cursos.find(item => item.id === id)
+        <div className="tabla-contenedor">
+          <table className="tabla-evaluaciones">
+            <thead>
+              <tr>
+                <th>Curso</th>
+                <th>Desafío</th>
+                <th>Fecha</th>
+                <th>Año</th>
+              </tr>
+            </thead>
 
-        return encontrado ? encontrado.nombre_curso : 'No encontrado'
-    }
-
-    const obtenerDesafio = id => {
-        const encontrado = desafios.find(item => item.id === id)
-
-        return encontrado ? encontrado.nombre : 'No encontrado'
-    }
-
-    return (
-        <div className="pagina-evaluaciones">
-            <h1>Gestión de Evaluaciones</h1>
-
-            <Link className="volver" to="/admin">
-                Volver al Dashboard
-            </Link>
-
-            <section className="seccion-evaluaciones">
-                <h2>Registrar evaluación</h2>
-
-                <form className="formulario-evaluaciones" onSubmit={registrarEvaluacion}>
-
-                    <div>
-                        <label>Curso</label>
-
-                        <select
-                            value={curso}
-                            onChange={e => setCurso(e.target.value)}
-                            required
-                        >
-                            <option value="">Seleccione un curso</option>
-
-                            {cursos.map(item => (
-                                <option key={item.id} value={item.id}>
-                                    {item.nombre_curso}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div>
-                        <label>Desafío</label>
-
-                        <select
-                            value={desafio}
-                            onChange={e => setDesafio(e.target.value)}
-                            required
-                        >
-                            <option value="">Seleccione un desafío</option>
-
-                            {desafios.map(item => (
-                                <option key={item.id} value={item.id}>
-                                    {item.nombre} - {item.tipo}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div>
-                        <label>Fecha de aplicación</label>
-
-                        <input
-                            type="date"
-                            value={fechaAplicacion}
-                            onChange={e => setFechaAplicacion(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label>Año</label>
-
-                        <input
-                            type="number"
-                            value={anio}
-                            onChange={e => setAnio(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <button type="submit">
-                        Registrar evaluación
-                    </button>
-
-                </form>
-            </section>
-
-            <section className="seccion-evaluaciones">
-                <h2>Evaluaciones registradas</h2>
-
-                <div className="tabla-contenedor">
-                    <table className="tabla-evaluaciones">
-
-                        <thead>
-                            <tr>
-                                <th>Curso</th>
-                                <th>Desafío</th>
-                                <th>Fecha</th>
-                                <th>Año</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {evaluaciones.map(item => (
-                                <tr key={item.id}>
-                                    <td>{obtenerCurso(item.id_curso)}</td>
-                                    <td>{obtenerDesafio(item.id_desafio)}</td>
-                                    <td>{item.fecha_aplicacion}</td>
-                                    <td>{item.anio}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-
-                    </table>
-                </div>
-            </section>
-
+            <tbody>
+              {evaluaciones.map(item => (
+                <tr key={item.id}>
+                  <td>{obtenerCurso(item.id_curso)}</td>
+                  <td>{obtenerDesafio(item.id_desafio)}</td>
+                  <td>{item.fecha_aplicacion}</td>
+                  <td>{item.anio}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-    )
+      </section>
+    </div>
+    </>
+  )
 }
 
 export default GestionEvaluaciones

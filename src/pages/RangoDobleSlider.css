@@ -1,0 +1,69 @@
+.rango-doble-slider {
+  margin: 36px 4px 12px;
+  user-select: none;
+}
+
+.rango-doble-slider__track {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: #e3e3e3;
+}
+
+.rango-doble-slider__zona {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.rango-doble-slider__zona--insuficiente {
+  background: #f3c6c2;
+}
+
+.rango-doble-slider__zona--adecuado {
+  background: #f2dfa1;
+}
+
+.rango-doble-slider__zona--logrado {
+  background: #bcdcc0;
+}
+
+.rango-doble-slider__manija {
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #333;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  touch-action: none;
+}
+
+.rango-doble-slider__manija:active {
+  cursor: grabbing;
+}
+
+.rango-doble-slider__manija:focus-visible {
+  outline: 2px solid #4a90d9;
+  outline-offset: 2px;
+}
+
+.rango-doble-slider__etiqueta {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.rango-doble-slider__extremos {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #666;
+}

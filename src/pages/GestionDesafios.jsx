@@ -1,8 +1,15 @@
 import { useState, useEffect } from 'react'
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore'
-import { Link } from 'react-router-dom'
 import { db } from '../config'
+import RangoDobleSlider from './RangoDobleSlider'
 import './GestionDesafios.css'
+import Navbar from '../components/Navbar'
+
+const TIPOS = {
+  MATEMATICA: 'Matemática',
+  LENGUAJE: 'Lenguaje',
+  VELOCIDAD_LECTORA: 'Velocidad Lectora'
+}
 
 function GestionDesafios() {
   const [nombre, setNombre] = useState('')
@@ -23,29 +30,20 @@ function GestionDesafios() {
 
   const cargarDesafios = async () => {
     const datos = await getDocs(collection(db, 'desafios'))
-
-    const lista = datos.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    }))
-
+    const lista = datos.docs.map(item => ({ id: item.id, ...item.data() }))
     setDesafios(lista)
   }
 
   const obtenerPuntajeMaximo = () => {
-    if (tipo === 'Matemática') {
-      return Number(puntajeMaximo || 0)
+    switch (tipo) {
+      case TIPOS.MATEMATICA:
+      case TIPOS.VELOCIDAD_LECTORA:
+        return Number(puntajeMaximo || 0)
+      case TIPOS.LENGUAJE:
+        return Number(maxLocalizar || 0) + Number(maxInterpretar || 0) + Number(maxReflexionar || 0)
+      default:
+        return 0
     }
-
-    if (tipo === 'Lenguaje') {
-      return Number(maxLocalizar || 0) + Number(maxInterpretar || 0) + Number(maxReflexionar || 0)
-    }
-
-    if (tipo === 'Velocidad Lectora') {
-      return 200
-    }
-
-    return 0
   }
 
   const ajustarRangos = maximo => {
@@ -54,82 +52,15 @@ function GestionDesafios() {
     let adecuado = Number(adecuadoDesde)
     let logrado = Number(logradoDesde)
 
-    if (adecuado >= maximo) {
-      adecuado = maximo - 1
-    }
-
-    if (logrado > maximo) {
-      logrado = maximo
-    }
-
-    if (logrado <= adecuado) {
-      logrado = adecuado + 1
-    }
+    if (adecuado >= maximo) adecuado = maximo - 1
+    if (logrado > maximo) logrado = maximo
+    if (logrado <= adecuado) logrado = adecuado + 1
 
     setAdecuadoDesde(adecuado)
     setLogradoDesde(logrado)
   }
 
-  const cambiarTipo = nuevoTipo => {
-    setTipo(nuevoTipo)
-    setCantidadDias('')
-    setPuntajeMaximo('')
-    setMaxLocalizar('')
-    setMaxInterpretar('')
-    setMaxReflexionar('')
-
-    if (nuevoTipo === 'Velocidad Lectora') {
-      setAdecuadoDesde(80)
-      setLogradoDesde(120)
-    } else {
-      setAdecuadoDesde(1)
-      setLogradoDesde(2)
-    }
-  }
-
-  const cambiarPuntajeMaximo = valor => {
-    setPuntajeMaximo(valor)
-
-    const maximo = Number(valor)
-
-    if (maximo >= 2) {
-      ajustarRangos(maximo)
-    }
-  }
-
-  const cambiarMaxLocalizar = valor => {
-    setMaxLocalizar(valor)
-
-    const maximo = Number(valor || 0) + Number(maxInterpretar || 0) + Number(maxReflexionar || 0)
-
-    if (maximo >= 2) {
-      ajustarRangos(maximo)
-    }
-  }
-
-  const cambiarMaxInterpretar = valor => {
-    setMaxInterpretar(valor)
-
-    const maximo = Number(maxLocalizar || 0) + Number(valor || 0) + Number(maxReflexionar || 0)
-
-    if (maximo >= 2) {
-      ajustarRangos(maximo)
-    }
-  }
-
-  const cambiarMaxReflexionar = valor => {
-    setMaxReflexionar(valor)
-
-    const maximo = Number(maxLocalizar || 0) + Number(maxInterpretar || 0) + Number(valor || 0)
-
-    if (maximo >= 2) {
-      ajustarRangos(maximo)
-    }
-  }
-
-  const limpiarFormulario = () => {
-    setNombre('')
-    setTipo('')
+  const reiniciarCamposDependientes = () => {
     setCantidadDias('')
     setPuntajeMaximo('')
     setMaxLocalizar('')
@@ -137,42 +68,58 @@ function GestionDesafios() {
     setMaxReflexionar('')
     setAdecuadoDesde(1)
     setLogradoDesde(2)
+  }
+
+  const cambiarTipo = nuevoTipo => {
+    setTipo(nuevoTipo)
+    reiniciarCamposDependientes()
+  }
+
+  const cambiarPuntajeMaximo = valor => {
+    setPuntajeMaximo(valor)
+    const maximo = Number(valor)
+    if (maximo >= 2) ajustarRangos(maximo)
+  }
+
+  const cambiarComponenteLenguaje = (setter, valor, otrosComponentes) => {
+    setter(valor)
+    const maximo = Number(valor || 0) + otrosComponentes.reduce((total, actual) => total + Number(actual || 0), 0)
+    if (maximo >= 2) ajustarRangos(maximo)
+  }
+
+  const cambiarMaxLocalizar = valor => cambiarComponenteLenguaje(setMaxLocalizar, valor, [maxInterpretar, maxReflexionar])
+  const cambiarMaxInterpretar = valor => cambiarComponenteLenguaje(setMaxInterpretar, valor, [maxLocalizar, maxReflexionar])
+  const cambiarMaxReflexionar = valor => cambiarComponenteLenguaje(setMaxReflexionar, valor, [maxLocalizar, maxInterpretar])
+
+  const limpiarFormulario = () => {
+    setNombre('')
+    setTipo('')
+    reiniciarCamposDependientes()
     setDesafioEditar(null)
   }
 
   const obtenerCampos = () => {
-    if (tipo === 'Matemática') {
-      const campos = []
-      const etiquetas = []
+    switch (tipo) {
+      case TIPOS.MATEMATICA: {
+        const campos = []
+        const etiquetas = []
 
-      for (let i = 1; i <= Number(cantidadDias); i++) {
-        campos.push(`dia${i}`)
-        etiquetas.push(`Día ${i}`)
+        for (let i = 1; i <= Number(cantidadDias); i++) {
+          campos.push(`dia${i}`)
+          etiquetas.push(`Día ${i}`)
+        }
+
+        return { campos, etiquetas }
       }
 
-      return {
-        campos,
-        etiquetas
-      }
-    }
+      case TIPOS.LENGUAJE:
+        return { campos: ['localizar', 'interpretar', 'reflexionar'], etiquetas: ['Localizar', 'Interpretar/Inferir', 'Reflexionar'] }
 
-    if (tipo === 'Lenguaje') {
-      return {
-        campos: ['localizar', 'interpretar', 'reflexionar'],
-        etiquetas: ['Localizar', 'Interpretar/Inferir', 'Reflexionar']
-      }
-    }
+      case TIPOS.VELOCIDAD_LECTORA:
+        return { campos: ['palabras'], etiquetas: ['Palabras leídas'] }
 
-    if (tipo === 'Velocidad Lectora') {
-      return {
-        campos: ['palabras'],
-        etiquetas: ['Palabras leídas']
-      }
-    }
-
-    return {
-      campos: [],
-      etiquetas: []
+      default:
+        return { campos: [], etiquetas: [] }
     }
   }
 
@@ -182,23 +129,24 @@ function GestionDesafios() {
       return false
     }
 
-    if (tipo === 'Matemática') {
-      if (Number(cantidadDias) < 1) {
-        alert('Ingrese la cantidad de días')
-        return false
-      }
-
-      if (Number(puntajeMaximo) < 2) {
-        alert('Ingrese un puntaje máximo válido')
-        return false
-      }
+    if (tipo === TIPOS.MATEMATICA && Number(cantidadDias) < 1) {
+      alert('Ingrese la cantidad de días')
+      return false
     }
 
-    if (tipo === 'Lenguaje') {
-      if (obtenerPuntajeMaximo() < 2) {
-        alert('Ingrese los puntajes máximos')
-        return false
-      }
+    if (tipo === TIPOS.MATEMATICA && Number(puntajeMaximo) < 2) {
+      alert('Ingrese un puntaje máximo válido')
+      return false
+    }
+
+    if (tipo === TIPOS.LENGUAJE && obtenerPuntajeMaximo() < 2) {
+      alert('Ingrese los puntajes máximos')
+      return false
+    }
+
+    if (tipo === TIPOS.VELOCIDAD_LECTORA && Number(puntajeMaximo) < 2) {
+      alert('Ingrese la cantidad máxima de palabras leídas')
+      return false
     }
 
     if (Number(adecuadoDesde) >= Number(logradoDesde)) {
@@ -215,11 +163,11 @@ function GestionDesafios() {
     return {
       nombre,
       tipo,
-      cantidad_dias: tipo === 'Matemática' ? Number(cantidadDias) : null,
-      puntaje_maximo: tipo === 'Velocidad Lectora' ? null : obtenerPuntajeMaximo(),
-      max_localizar: tipo === 'Lenguaje' ? Number(maxLocalizar) : null,
-      max_interpretar: tipo === 'Lenguaje' ? Number(maxInterpretar) : null,
-      max_reflexionar: tipo === 'Lenguaje' ? Number(maxReflexionar) : null,
+      cantidad_dias: tipo === TIPOS.MATEMATICA ? Number(cantidadDias) : null,
+      puntaje_maximo: obtenerPuntajeMaximo(),
+      max_localizar: tipo === TIPOS.LENGUAJE ? Number(maxLocalizar) : null,
+      max_interpretar: tipo === TIPOS.LENGUAJE ? Number(maxInterpretar) : null,
+      max_reflexionar: tipo === TIPOS.LENGUAJE ? Number(maxReflexionar) : null,
       campos: estructura.campos,
       etiquetas: estructura.etiquetas,
       adecuado_desde: Number(adecuadoDesde),
@@ -229,16 +177,11 @@ function GestionDesafios() {
 
   const registrarDesafio = async e => {
     e.preventDefault()
-
     if (!validarDesafio()) return
 
-    await addDoc(collection(db, 'desafios'), {
-      ...crearDatos(),
-      fecha_creacion: serverTimestamp()
-    })
+    await addDoc(collection(db, 'desafios'), { ...crearDatos(), fecha_creacion: serverTimestamp() })
 
     alert('Desafío registrado correctamente')
-
     limpiarFormulario()
     cargarDesafios()
   }
@@ -258,309 +201,130 @@ function GestionDesafios() {
 
   const guardarCambios = async e => {
     e.preventDefault()
-
     if (!validarDesafio()) return
 
-    await updateDoc(
-      doc(db, 'desafios', desafioEditar.id),
-      crearDatos()
-    )
+    await updateDoc(doc(db, 'desafios', desafioEditar.id), crearDatos())
 
     alert('Desafío actualizado correctamente')
-
     limpiarFormulario()
     cargarDesafios()
   }
 
   const eliminarDesafio = async id => {
     const confirmar = window.confirm('¿Desea eliminar este desafío?')
-
     if (!confirmar) return
 
     await deleteDoc(doc(db, 'desafios', id))
 
     alert('Desafío eliminado correctamente')
-
     cargarDesafios()
   }
 
   const maximoVisual = obtenerPuntajeMaximo()
 
-  const porcentajeAdecuado = maximoVisual > 0
-    ? (Number(adecuadoDesde) / maximoVisual) * 100
-    : 0
-
-  const porcentajeLogrado = maximoVisual > 0
-    ? (Number(logradoDesde) / maximoVisual) * 100
-    : 0
-
   return (
-    <div className="pagina-desafios">
+    <>
+    <Navbar />
 
+    <div className="pagina-desafios">
       <h1>Gestión de Desafíos</h1>
 
-      <Link className="volver" to="/admin">
-        Volver al Dashboard
-      </Link>
-
       <section className="seccion-desafios">
-
         <h2>{desafioEditar ? 'Editar desafío' : 'Registrar desafío'}</h2>
 
-        <form
-          className="formulario-desafios"
-          onSubmit={desafioEditar ? guardarCambios : registrarDesafio}
-        >
-
+        <form className="formulario-desafios" onSubmit={desafioEditar ? guardarCambios : registrarDesafio}>
           <div>
             <label>Nombre del desafío</label>
-
-            <input
-              type="text"
-              value={nombre}
-              onChange={e => setNombre(e.target.value)}
-              required
-            />
+            <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} required />
           </div>
 
           <div>
             <label>Tipo de desafío</label>
-
-            <select
-              value={tipo}
-              onChange={e => cambiarTipo(e.target.value)}
-              required
-            >
+            <select value={tipo} onChange={e => cambiarTipo(e.target.value)} required>
               <option value="">Seleccione un tipo</option>
-              <option value="Matemática">Matemática</option>
-              <option value="Lenguaje">Lenguaje</option>
-              <option value="Velocidad Lectora">Velocidad Lectora</option>
+              <option value={TIPOS.MATEMATICA}>{TIPOS.MATEMATICA}</option>
+              <option value={TIPOS.LENGUAJE}>{TIPOS.LENGUAJE}</option>
+              <option value={TIPOS.VELOCIDAD_LECTORA}>{TIPOS.VELOCIDAD_LECTORA}</option>
             </select>
           </div>
 
-          {tipo === 'Matemática' && (
+          {tipo === TIPOS.MATEMATICA && (
             <>
               <div>
                 <label>Cantidad de días</label>
-
-                <input
-                  type="number"
-                  min="1"
-                  value={cantidadDias}
-                  onChange={e => setCantidadDias(e.target.value)}
-                  required
-                />
+                <input type="number" min="1" value={cantidadDias} onChange={e => setCantidadDias(e.target.value)} required />
               </div>
-
               <div>
                 <label>Puntaje máximo</label>
-
-                <input
-                  type="number"
-                  min="2"
-                  value={puntajeMaximo}
-                  onChange={e => cambiarPuntajeMaximo(e.target.value)}
-                  required
-                />
+                <input type="number" min="2" value={puntajeMaximo} onChange={e => cambiarPuntajeMaximo(e.target.value)} required />
               </div>
             </>
           )}
 
-          {tipo === 'Lenguaje' && (
+          {tipo === TIPOS.LENGUAJE && (
             <>
               <div>
                 <label>Puntaje máximo Localizar</label>
-
-                <input
-                  type="number"
-                  min="0"
-                  value={maxLocalizar}
-                  onChange={e => cambiarMaxLocalizar(e.target.value)}
-                  required
-                />
+                <input type="number" min="0" value={maxLocalizar} onChange={e => cambiarMaxLocalizar(e.target.value)} required />
               </div>
-
               <div>
                 <label>Puntaje máximo Interpretar/Inferir</label>
-
-                <input
-                  type="number"
-                  min="0"
-                  value={maxInterpretar}
-                  onChange={e => cambiarMaxInterpretar(e.target.value)}
-                  required
-                />
+                <input type="number" min="0" value={maxInterpretar} onChange={e => cambiarMaxInterpretar(e.target.value)} required />
               </div>
-
               <div>
                 <label>Puntaje máximo Reflexionar</label>
-
-                <input
-                  type="number"
-                  min="0"
-                  value={maxReflexionar}
-                  onChange={e => cambiarMaxReflexionar(e.target.value)}
-                  required
-                />
+                <input type="number" min="0" value={maxReflexionar} onChange={e => cambiarMaxReflexionar(e.target.value)} required />
               </div>
-
               <div>
                 <label>Puntaje máximo total</label>
-
-                <input
-                  type="number"
-                  value={obtenerPuntajeMaximo()}
-                  disabled
-                />
+                <input type="number" value={obtenerPuntajeMaximo()} disabled />
               </div>
             </>
           )}
 
-          {tipo === 'Velocidad Lectora' && (
-            <div className="informacion-desafio">
-              Solo se registrará la cantidad de palabras leídas.
-            </div>
+          {tipo === TIPOS.VELOCIDAD_LECTORA && (
+            <>
+              <div>
+                <label>Cantidad máxima de palabras leídas</label>
+                <input type="number" min="2" value={puntajeMaximo} onChange={e => cambiarPuntajeMaximo(e.target.value)} required />
+              </div>
+            </>
           )}
 
           {tipo && maximoVisual > 0 && (
             <div className="clasificacion">
-
               <h3>Clasificación del desafío</h3>
 
-              <div className="numeros-barra">
-                <span>0</span>
-
-                <span
-                  style={{
-                    left: `${porcentajeAdecuado}%`
-                  }}
-                >
-                  {adecuadoDesde}
-                </span>
-
-                <span
-                  style={{
-                    left: `${porcentajeLogrado}%`
-                  }}
-                >
-                  {logradoDesde}
-                </span>
-
-                <span className="numero-final">
-                  {maximoVisual}
-                </span>
-              </div>
-
-              <div className="barra-rangos">
-
-                <div
-                  className="zona-insuficiente"
-                  style={{
-                    width: `${porcentajeAdecuado}%`
-                  }}
-                >
-                  Insuficiente
-                </div>
-
-                <div
-                  className="zona-adecuado"
-                  style={{
-                    width: `${porcentajeLogrado - porcentajeAdecuado}%`
-                  }}
-                >
-                  Adecuado
-                </div>
-
-                <div
-                  className="zona-logrado"
-                  style={{
-                    width: `${100 - porcentajeLogrado}%`
-                  }}
-                >
-                  Logrado
-                </div>
-
-                <input
-                  className="control-rango"
-                  type="range"
-                  min="1"
-                  max={Math.max(1, Number(logradoDesde) - 1)}
-                  value={adecuadoDesde}
-                  onChange={e => {
-                    const valor = Number(e.target.value)
-
-                    setAdecuadoDesde(valor)
-
-                    if (valor >= Number(logradoDesde)) {
-                      setLogradoDesde(valor + 1)
-                    }
-                  }}
-                />
-
-                <input
-                  className="control-rango segundo-control"
-                  type="range"
-                  min={Number(adecuadoDesde) + 1}
-                  max={maximoVisual}
-                  value={logradoDesde}
-                  onChange={e => setLogradoDesde(Number(e.target.value))}
-                />
-
-              </div>
+              <RangoDobleSlider
+                minimo={0}
+                maximo={maximoVisual}
+                adecuadoDesde={Number(adecuadoDesde)}
+                logradoDesde={Number(logradoDesde)}
+                onCambiarAdecuado={setAdecuadoDesde}
+                onCambiarLogrado={setLogradoDesde}
+              />
 
               <div className="resultado-rangos">
-
-                <div>
-                  <strong>Insuficiente</strong>
-                  <span>0 - {Number(adecuadoDesde) - 1}</span>
-                </div>
-
-                <div>
-                  <strong>Adecuado</strong>
-                  <span>{adecuadoDesde} - {Number(logradoDesde) - 1}</span>
-                </div>
-
-                <div>
-                  <strong>Logrado</strong>
-                  <span>{logradoDesde} - {maximoVisual}</span>
-                </div>
-
+                <div><strong>Insuficiente</strong><span>0 - {Number(adecuadoDesde) - 1}</span></div>
+                <div><strong>Adecuado</strong><span>{adecuadoDesde} - {Number(logradoDesde) - 1}</span></div>
+                <div><strong>Logrado</strong><span>{logradoDesde} - {maximoVisual}</span></div>
               </div>
-
             </div>
           )}
 
           <div className="botones-desafio">
-
-            <button type="submit">
-              {desafioEditar ? 'Guardar cambios' : 'Registrar desafío'}
-            </button>
-
-            {desafioEditar && (
-              <button
-                type="button"
-                onClick={limpiarFormulario}
-              >
-                Cancelar
-              </button>
-            )}
-
+            <button type="submit">{desafioEditar ? 'Guardar cambios' : 'Registrar desafío'}</button>
+            {desafioEditar && <button type="button" onClick={limpiarFormulario}>Cancelar</button>}
           </div>
-
         </form>
-
       </section>
 
       <section className="seccion-desafios">
-
         <h2>Desafíos registrados</h2>
 
         <div className="tabla-contenedor">
-
           <table className="tabla-desafios">
-
             <thead>
-
               <tr>
                 <th>Nombre</th>
                 <th>Tipo</th>
@@ -569,58 +333,28 @@ function GestionDesafios() {
                 <th>Logrado desde</th>
                 <th>Acciones</th>
               </tr>
-
             </thead>
 
             <tbody>
-
               {desafios.map(item => (
                 <tr key={item.id}>
-
                   <td>{item.nombre}</td>
-
                   <td>{item.tipo}</td>
-
-                  <td>
-                    {item.tipo === 'Velocidad Lectora'
-                      ? 'Palabras'
-                      : item.puntaje_maximo}
-                  </td>
-
+                  <td>{item.puntaje_maximo}</td>
                   <td>{item.adecuado_desde}</td>
-
                   <td>{item.logrado_desde}</td>
-
                   <td>
-
-                    <button
-                      type="button"
-                      onClick={() => seleccionarEditar(item)}
-                    >
-                      Editar
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => eliminarDesafio(item.id)}
-                    >
-                      Eliminar
-                    </button>
-
+                    <button type="button" onClick={() => seleccionarEditar(item)}>Editar</button>
+                    <button type="button" onClick={() => eliminarDesafio(item.id)}>Eliminar</button>
                   </td>
-
                 </tr>
               ))}
-
             </tbody>
-
           </table>
-
         </div>
-
       </section>
-
     </div>
+        </>
   )
 }
 

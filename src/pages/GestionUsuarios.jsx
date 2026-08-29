@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { initializeApp } from 'firebase/app'
 import { createUserWithEmailAndPassword, getAuth, signOut } from 'firebase/auth'
 import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore'
-
 import { db, firebaseConfig } from '../config'
 import './GestionUsuarios.css'
+import Navbar from '../components/Navbar'
 
 const appRegistro = initializeApp(firebaseConfig, 'registro-usuarios')
 const authRegistro = getAuth(appRegistro)
@@ -91,11 +91,10 @@ function GestionUsuarios() {
   }
 
   return (
-    <main className="pagina-usuarios">
-      <h1>Gestión de Usuarios</h1>
-
-      <Link className="volver" to="/admin">Volver al panel</Link>
-
+    <>
+      <Navbar />
+      <main className="pagina-usuarios">
+        <h1>Gestión de Usuarios</h1>
       <section className="seccion-usuarios">
       <h2>Registrar Usuario</h2>
 
@@ -195,6 +194,7 @@ function GestionUsuarios() {
       )}
       </section>
     </main>
+    </>
   )
 }
 

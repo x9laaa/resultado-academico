@@ -1,398 +1,253 @@
 import { useState, useEffect } from 'react'
-import {
-  collection,
-  addDoc,
-  getDocs,
-  doc,
-  updateDoc,
-  deleteDoc,
-  arrayUnion,
-  arrayRemove
-} from 'firebase/firestore'
-
+import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, arrayUnion, arrayRemove } from 'firebase/firestore'
 import { Link } from 'react-router-dom'
 import { db } from '../config'
+import Navbar from '../components/Navbar'
 import './GestionCursos.css'
 
 function GestionCursos() {
-
   const [curso, setCurso] = useState('')
   const [cursos, setCursos] = useState([])
   const [usuarios, setUsuarios] = useState([])
-
+  const [estudiantes, setEstudiantes] = useState([])
   const [cursoEditar, setCursoEditar] = useState(null)
   const [nuevoNombre, setNuevoNombre] = useState('')
   const [profesor, setProfesor] = useState('')
 
-  const cargarCursos = async () => {
-    const datos = await getDocs(collection(db, 'cursos'))
-
-    const lista = datos.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data()
-    }))
-
-    setCursos(lista)
-  }
-
-  const cargarUsuarios = async () => {
-    const datos = await getDocs(collection(db, 'usuarios'))
-
-    const lista = datos.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data()
-    }))
-
-    setUsuarios(lista)
-  }
-
   useEffect(() => {
-    cargarCursos()
-    cargarUsuarios()
+    cargarDatos()
   }, [])
 
-  const registrarCurso = async (e) => {
-    e.preventDefault()
+  const cargarDatos = async () => {
+    try {
+      const [cursosData, usuariosData, estudiantesData] = await Promise.all([
+        getDocs(collection(db, 'cursos')),
+        getDocs(collection(db, 'usuarios')),
+        getDocs(collection(db, 'estudiantes'))
+      ])
 
-    await addDoc(collection(db, 'cursos'), {
-      nombre_curso: curso,
-      profesores: []
-    })
-
-    setCurso('')
-    cargarCursos()
-
-    alert('Curso registrado correctamente')
-  }
-
-  const eliminarCurso = async (id) => {
-    const confirmar = window.confirm(
-      '¿Está seguro de eliminar este curso?'
-    )
-
-    if (confirmar) {
-      await deleteDoc(doc(db, 'cursos', id))
-
-      cargarCursos()
-
-      alert('Curso eliminado correctamente')
+      setCursos(cursosData.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+      setUsuarios(usuariosData.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+      setEstudiantes(estudiantesData.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    } catch (error) {
+      console.error(error)
+      alert('Error al cargar los datos')
     }
   }
 
-  const seleccionarEditar = (item) => {
-    setCursoEditar(item)
-    setNuevoNombre(item.nombre_curso)
+  const registrarCurso = async e => {
+    e.preventDefault()
+    if (!curso.trim()) return alert('Ingrese un nombre de curso')
+
+    try {
+      await addDoc(collection(db, 'cursos'), { nombre_curso: curso.trim(), profesores: [] })
+      setCurso('')
+      await cargarDatos()
+      alert('Curso registrado correctamente')
+    } catch (error) {
+      console.error(error)
+      alert('Error al registrar el curso')
+    }
+  }
+
+  const eliminarCurso = async id => {
+    if (!window.confirm('¿Está seguro de eliminar este curso?')) return
+
+    try {
+      await deleteDoc(doc(db, 'cursos', id))
+      await cargarDatos()
+      alert('Curso eliminado correctamente')
+    } catch (error) {
+      console.error(error)
+      alert('Error al eliminar el curso')
+    }
+  }
+
+  const seleccionarEditar = curso => {
+    setCursoEditar(curso)
+    setNuevoNombre(curso.nombre_curso)
     setProfesor('')
   }
 
-  const guardarNombreCurso = async (e) => {
+  const guardarNombreCurso = async e => {
     e.preventDefault()
+    if (!nuevoNombre.trim()) return alert('Ingrese un nombre de curso')
 
-    await updateDoc(
-      doc(db, 'cursos', cursoEditar.id),
-      {
-        nombre_curso: nuevoNombre
-      }
-    )
-
-    setCursoEditar({
-      ...cursoEditar,
-      nombre_curso: nuevoNombre
-    })
-
-    cargarCursos()
-
-    alert('Nombre actualizado')
+    try {
+      await updateDoc(doc(db, 'cursos', cursoEditar.id), { nombre_curso: nuevoNombre.trim() })
+      setCursoEditar(prev => ({ ...prev, nombre_curso: nuevoNombre.trim() }))
+      await cargarDatos()
+      alert('Nombre actualizado')
+    } catch (error) {
+      console.error(error)
+      alert('Error al actualizar el curso')
+    }
   }
 
   const agregarProfesor = async () => {
-    if (profesor === '') {
-      alert('Seleccione un profesor')
-      return
+    if (!profesor) return alert('Seleccione un profesor')
+
+    try {
+      await updateDoc(doc(db, 'cursos', cursoEditar.id), { profesores: arrayUnion(profesor) })
+      setCursoEditar(prev => ({ ...prev, profesores: [...new Set([...(prev.profesores || []), profesor])] }))
+      setProfesor('')
+      await cargarDatos()
+    } catch (error) {
+      console.error(error)
+      alert('Error al agregar el profesor')
     }
-
-    await updateDoc(
-      doc(db, 'cursos', cursoEditar.id),
-      {
-        profesores: arrayUnion(profesor)
-      }
-    )
-
-    const profesoresActualizados = [
-      ...(cursoEditar.profesores || [])
-    ]
-
-    if (!profesoresActualizados.includes(profesor)) {
-      profesoresActualizados.push(profesor)
-    }
-
-    setCursoEditar({
-      ...cursoEditar,
-      profesores: profesoresActualizados
-    })
-
-    setProfesor('')
-
-    cargarCursos()
   }
 
-  const quitarProfesor = async (idProfesor) => {
-    await updateDoc(
-      doc(db, 'cursos', cursoEditar.id),
-      {
-        profesores: arrayRemove(idProfesor)
-      }
-    )
-
-    setCursoEditar({
-      ...cursoEditar,
-      profesores: cursoEditar.profesores.filter(
-        (id) => id !== idProfesor
-      )
-    })
-
-    cargarCursos()
-  }
-
-  const obtenerNombreProfesor = (id) => {
-    const usuario = usuarios.find(
-      (item) => item.id === id
-    )
-
-    if (usuario) {
-      return `${usuario.nombre} ${usuario.apellido}`
+  const quitarProfesor = async idProfesor => {
+    try {
+      await updateDoc(doc(db, 'cursos', cursoEditar.id), { profesores: arrayRemove(idProfesor) })
+      setCursoEditar(prev => ({ ...prev, profesores: (prev.profesores || []).filter(id => id !== idProfesor) }))
+      await cargarDatos()
+    } catch (error) {
+      console.error(error)
+      alert('Error al quitar el profesor')
     }
-
-    return 'Profesor no encontrado'
   }
+
+  const obtenerNombreProfesor = id => {
+    const usuario = usuarios.find(item => item.id === id)
+    return usuario ? `${usuario.nombre} ${usuario.apellido}` : 'Profesor no encontrado'
+  }
+
+  const obtenerEstudiantesCurso = idCurso => estudiantes.filter(estudiante => estudiante.id_curso === idCurso)
+
+  const profesores = usuarios.filter(item => item.rol === 'profesor')
 
   return (
-    <div className="pagina-cursos">
+    <>
+      <Navbar />
 
-      <h1>Gestión de Cursos</h1>
+      <div className="pagina-cursos">
+        <h1>Gestión de Cursos</h1>
 
-      <Link className="volver" to="/admin">
-        Volver al Dashboard
-      </Link>
-
-      <section className="seccion-cursos">
-
-        <h2>Registrar curso</h2>
-
-        <form
-          className="formulario-cursos"
-          onSubmit={registrarCurso}
-        >
-
-          <div>
-            <label>Curso</label>
-
-            <select
-              value={curso}
-              onChange={(e) => setCurso(e.target.value)}
-              required
-            >
-              <option value="">Seleccione un curso</option>
-              <option value="1° Básico">1° Básico</option>
-              <option value="2° Básico">2° Básico</option>
-              <option value="3° Básico">3° Básico</option>
-              <option value="4° Básico">4° Básico</option>
-              <option value="5° Básico">5° Básico</option>
-              <option value="6° Básico">6° Básico</option>
-  
-            </select>
-          </div>
-
-          <button type="submit">
-            Agregar curso
-          </button>
-
-        </form>
-
-      </section>
-
-      {cursoEditar && (
+        <Link className="volver" to="/admin">Volver al Dashboard</Link>
 
         <section className="seccion-cursos">
+          <h2>Registrar curso</h2>
 
-          <h2>Editar curso</h2>
-
-          <form
-            className="formulario-editar"
-            onSubmit={guardarNombreCurso}
-          >
-
-            <select
-              value={nuevoNombre}
-              onChange={(e) => setNuevoNombre(e.target.value)}
-            >
-              <option value="1° Básico">1° Básico</option>
-              <option value="2° Básico">2° Básico</option>
-              <option value="3° Básico">3° Básico</option>
-              <option value="4° Básico">4° Básico</option>
-              <option value="5° Básico">5° Básico</option>
-              <option value="6° Básico">6° Básico</option>
-
-            </select>
-
-            <button type="submit">
-              Guardar nombre
-            </button>
-
+          <form className="formulario-cursos" onSubmit={registrarCurso}>
+            <input type="text" value={curso} onChange={e => setCurso(e.target.value)} placeholder="Ej: 3° Medio G" required />
+            <button type="submit">Agregar curso</button>
           </form>
-
-          <h3>Profesores asignados</h3>
-
-          {cursoEditar.profesores &&
-          cursoEditar.profesores.length > 0 ? (
-
-            <ul>
-              {cursoEditar.profesores.map((idProfesor) => (
-                <li key={idProfesor}>
-
-                  {obtenerNombreProfesor(idProfesor)}
-
-                  <button
-                    type="button"
-                    onClick={() => quitarProfesor(idProfesor)}
-                  >
-                    Quitar
-                  </button>
-
-                </li>
-              ))}
-            </ul>
-
-          ) : (
-
-            <p>No hay profesores asignados.</p>
-
-          )}
-
-          <h3>Agregar profesor</h3>
-
-          <div className="formulario-profesor">
-
-            <select
-              value={profesor}
-              onChange={(e) => setProfesor(e.target.value)}
-            >
-              <option value="">
-                Seleccione un profesor
-              </option>
-
-              {usuarios
-                .filter((item) => item.rol === 'profesor')
-                .map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.id}
-                  >
-                    {item.nombre} {item.apellido}
-                  </option>
-                ))
-              }
-
-            </select>
-
-            <button
-              type="button"
-              onClick={agregarProfesor}
-            >
-              Agregar profesor
-            </button>
-
-          </div>
-
-          <br />
-
-          <button
-            type="button"
-            onClick={() => setCursoEditar(null)}
-          >
-            Cerrar edición
-          </button>
-
         </section>
 
-      )}
+        {cursoEditar && (
+          <section className="seccion-cursos">
+            <div className="encabezado-edicion">
+              <h2>Editar: {cursoEditar.nombre_curso}</h2>
+              <button type="button" onClick={() => setCursoEditar(null)}>Cerrar</button>
+            </div>
 
-      <section className="seccion-cursos">
+            <form className="formulario-editar" onSubmit={guardarNombreCurso}>
+              <input type="text" value={nuevoNombre} onChange={e => setNuevoNombre(e.target.value)} required />
+              <button type="submit">Guardar nombre</button>
+            </form>
 
-        <h2>Cursos registrados</h2>
+            <div className="grid-edicion">
 
-        <div className="tabla-contenedor">
+              <div>
+                <h3>Profesores</h3>
 
-          <table className="tabla-cursos">
+                {cursoEditar.profesores?.length > 0 ? (
+                  <ul className="lista-compacta">
+                    {cursoEditar.profesores.map(id => (
+                      <li key={id}>
+                        <span>{obtenerNombreProfesor(id)}</span>
+                        <button type="button" onClick={() => quitarProfesor(id)}>Quitar</button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>Sin profesores asignados.</p>
+                )}
 
-            <thead>
-              <tr>
-                <th>Curso</th>
-                <th>Profesores</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
+                <div className="formulario-profesor">
+                  <select value={profesor} onChange={e => setProfesor(e.target.value)}>
+                    <option value="">Seleccione profesor</option>
 
-            <tbody>
+                    {profesores.map(item => (
+                      <option key={item.id} value={item.id}>
+                        {item.nombre} {item.apellido}
+                      </option>
+                    ))}
+                  </select>
 
-              {cursos.map((item) => (
+                  <button type="button" onClick={agregarProfesor}>Agregar</button>
+                </div>
+              </div>
 
-                <tr key={item.id}>
+              <div>
+                <h3>
+                  Estudiantes ({obtenerEstudiantesCurso(cursoEditar.id).length})
+                </h3>
 
-                  <td>{item.nombre_curso}</td>
+                {obtenerEstudiantesCurso(cursoEditar.id).length > 0 ? (
+                  <div className="estudiantes-compactos">
+                    {obtenerEstudiantesCurso(cursoEditar.id).map((estudiante, index) => (
+                      <div className="estudiante-item" key={estudiante.id}>
+                        <span>{index + 1}.</span>
+                        <span>{estudiante.nombre} {estudiante.apellido}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>Sin estudiantes registrados.</p>
+                )}
+              </div>
 
-                  <td>
+            </div>
+          </section>
+        )}
 
-                    {item.profesores &&
-                    item.profesores.length > 0 ? (
+        <section className="seccion-cursos">
+          <h2>Cursos registrados</h2>
 
-                      item.profesores.map((idProfesor) => (
-                        <div key={idProfesor}>
-                          {obtenerNombreProfesor(idProfesor)}
-                        </div>
-                      ))
-
-                    ) : (
-
-                      'Sin profesores'
-
-                    )}
-
-                  </td>
-
-                  <td>
-
-                    <div className="botones-cursos">
-
-                      <button
-                        onClick={() => seleccionarEditar(item)}
-                      >
-                        Editar
-                      </button>
-
-                      <button
-                        onClick={() => eliminarCurso(item.id)}
-                      >
-                        Eliminar
-                      </button>
-
-                    </div>
-
-                  </td>
-
+          <div className="tabla-contenedor">
+            <table className="tabla-cursos">
+              <thead>
+                <tr>
+                  <th>Curso</th>
+                  <th>Estudiantes</th>
+                  <th>Profesores</th>
+                  <th>Acciones</th>
                 </tr>
+              </thead>
 
-              ))}
+              <tbody>
+                {cursos.map(item => {
+                  const estudiantesCurso = obtenerEstudiantesCurso(item.id)
 
-            </tbody>
+                  return (
+                    <tr key={item.id}>
+                      <td>{item.nombre_curso}</td>
+                      <td>{estudiantesCurso.length}</td>
 
-          </table>
+                      <td>
+                        {item.profesores?.length > 0
+                          ? item.profesores.map(id => <div key={id}>{obtenerNombreProfesor(id)}</div>)
+                          : 'Sin profesores'}
+                      </td>
 
-        </div>
-
-      </section>
-
-    </div>
+                      <td>
+                        <div className="botones-cursos">
+                          <button onClick={() => seleccionarEditar(item)}>Editar</button>
+                          <button onClick={() => eliminarCurso(item.id)}>Eliminar</button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </>
   )
 }
 

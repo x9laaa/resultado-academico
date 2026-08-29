@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
-import { collection, getDocs, addDoc, query, where } from 'firebase/firestore'
+import { collection, getDocs, addDoc, updateDoc, doc, query, where } from 'firebase/firestore'
 import { Link } from 'react-router-dom'
 import { db } from '../config'
 import './RegistroResultados.css'
+import Navbar from '../components/Navbar'
+
+const NIVELES = { LOGRADO: 'Logrado', ADECUADO: 'Adecuado', INSUFICIENTE: 'Insuficiente' }
 
 function RegistroResultados() {
   const [evaluaciones, setEvaluaciones] = useState([])
@@ -13,171 +16,124 @@ function RegistroResultados() {
   const [resultados, setResultados] = useState({})
   const [guardando, setGuardando] = useState(false)
 
-  useEffect(() => {
-    cargarDatos()
-  }, [])
+  useEffect(() => { cargarDatos() }, [])
+
+  const cargarColeccion = async nombre => {
+    const datos = await getDocs(collection(db, nombre))
+    return datos.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+  }
 
   const cargarDatos = async () => {
-    const datosEvaluaciones = await getDocs(collection(db, 'evaluaciones'))
-    const datosDesafios = await getDocs(collection(db, 'desafios'))
-    const datosCursos = await getDocs(collection(db, 'cursos'))
-
-    setEvaluaciones(datosEvaluaciones.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    })))
-
-    setDesafios(datosDesafios.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    })))
-
-    setCursos(datosCursos.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    })))
+    try {
+      const [evals, des, cur] = await Promise.all([cargarColeccion('evaluaciones'), cargarColeccion('desafios'), cargarColeccion('cursos')])
+      setEvaluaciones(evals)
+      setDesafios(des)
+      setCursos(cur)
+    } catch (error) {
+      console.error(error)
+      alert('Error al cargar los datos')
+    }
   }
 
-  const obtenerCurso = id => {
-    const curso = cursos.find(item => item.id === id)
-    return curso ? curso.nombre_curso : 'Curso'
-  }
+  const obtenerCurso = id => cursos.find(c => c.id === id)?.nombre_curso || 'Curso'
+  const obtenerDesafio = id => desafios.find(d => d.id === id)?.nombre || 'Desafío'
 
-  const obtenerDesafio = id => {
-    const desafio = desafios.find(item => item.id === id)
-    return desafio ? desafio.nombre : 'Desafío'
-  }
-
-  const seleccionarEvaluacion = async idEvaluacion => {
-    setEvaluacion(idEvaluacion)
+  const seleccionarEvaluacion = async id => {
+    setEvaluacion(id)
     setEstudiantes([])
     setResultados({})
 
-    if (!idEvaluacion) return
+    if (!id) return
 
-    const evaluacionSeleccionada = evaluaciones.find(
-      item => item.id === idEvaluacion
-    )
+    const evaluacionActual = evaluaciones.find(e => e.id === id)
+    if (!evaluacionActual) return
 
-    if (!evaluacionSeleccionada) return
+    try {
+      const estudiantesQuery = query(collection(db, 'estudiantes'), where('id_curso', '==', evaluacionActual.id_curso))
+      const estudiantesData = await getDocs(estudiantesQuery)
+      const lista = estudiantesData.docs.map(doc => ({ id: doc.id, ...doc.data() }))
 
-    const consulta = query(
-      collection(db, 'estudiantes'),
-      where('id_curso', '==', evaluacionSeleccionada.id_curso)
-    )
+      setEstudiantes(lista)
 
-    const datos = await getDocs(consulta)
+      const resultadosIniciales = Object.fromEntries(lista.map(e => [e.id, { id_resultado: null }]))
 
-    const lista = datos.docs.map(item => ({
-      id: item.id,
-      ...item.data()
-    }))
+      const resultadosQuery = query(collection(db, 'resultados'), where('id_evaluacion', '==', id))
+      const resultadosData = await getDocs(resultadosQuery)
 
-    setEstudiantes(lista)
+      resultadosData.forEach(docResultado => {
+        const resultado = docResultado.data()
+        if (resultadosIniciales[resultado.id_estudiante]) resultadosIniciales[resultado.id_estudiante] = { ...resultado, id_resultado: docResultado.id }
+      })
 
-    const resultadosIniciales = {}
-
-    lista.forEach(estudiante => {
-      resultadosIniciales[estudiante.id] = {}
-    })
-
-    setResultados(resultadosIniciales)
+      setResultados(resultadosIniciales)
+    } catch (error) {
+      console.error(error)
+      alert('Error al cargar estudiantes y resultados')
+    }
   }
 
-  const evaluacionSeleccionada = evaluaciones.find(
-    item => item.id === evaluacion
-  )
+  const evaluacionSeleccionada = evaluaciones.find(e => e.id === evaluacion)
+  const desafioSeleccionado = evaluacionSeleccionada ? desafios.find(d => d.id === evaluacionSeleccionada.id_desafio) : null
+  const esVelocidadLectora = desafioSeleccionado?.tipo === 'Velocidad Lectora'
+  const puntajeMaximo = esVelocidadLectora ? 200 : Number(desafioSeleccionado?.puntaje_maximo || 0)
 
-  const desafioSeleccionado = evaluacionSeleccionada
-    ? desafios.find(item => item.id === evaluacionSeleccionada.id_desafio)
-    : null
-
-  const cambiarResultado = (idEstudiante, campo, valor) => {
-    setResultados(anterior => ({
-      ...anterior,
-      [idEstudiante]: {
-        ...anterior[idEstudiante],
-        [campo]: valor
-      }
-    }))
+  const cambiarResultado = (id, campo, valor) => {
+    setResultados(prev => ({ ...prev, [id]: { ...prev[id], [campo]: valor } }))
   }
 
-  const calcularPuntaje = idEstudiante => {
+  const calcularPuntaje = id => {
     if (!desafioSeleccionado) return 0
 
-    const resultado = resultados[idEstudiante] || {}
+    const resultado = resultados[id] || {}
 
-    if (desafioSeleccionado.tipo === 'Velocidad Lectora') {
-      return Number(resultado.palabras || 0)
-    }
+    if (esVelocidadLectora) return Number(resultado.palabras || 0)
 
-    return desafioSeleccionado.campos.reduce(
-      (total, campo) => total + Number(resultado[campo] || 0),
-      0
-    )
+    return desafioSeleccionado.campos?.reduce((total, campo) => total + Number(resultado[campo] || 0), 0) || 0
   }
 
   const calcularNivel = puntaje => {
     if (!desafioSeleccionado) return ''
 
-    if (
-      puntaje >= Number(desafioSeleccionado.rango_logrado_desde) &&
-      puntaje <= Number(desafioSeleccionado.rango_logrado_hasta)
-    ) {
-      return 'Logrado'
-    }
+    const adecuado = Number(desafioSeleccionado.adecuado_desde)
+    const logrado = Number(desafioSeleccionado.logrado_desde)
 
-    if (
-      puntaje >= Number(desafioSeleccionado.rango_adecuado_desde) &&
-      puntaje <= Number(desafioSeleccionado.rango_adecuado_hasta)
-    ) {
-      return 'Adecuado'
-    }
-
-    if (
-      puntaje >= Number(desafioSeleccionado.rango_insuficiente_desde) &&
-      puntaje <= Number(desafioSeleccionado.rango_insuficiente_hasta)
-    ) {
-      return 'Insuficiente'
-    }
-
-    return 'Sin clasificación'
+    if (puntaje >= logrado) return NIVELES.LOGRADO
+    if (puntaje >= adecuado) return NIVELES.ADECUADO
+    return NIVELES.INSUFICIENTE
   }
 
   const guardarResultados = async () => {
-    if (!evaluacionSeleccionada || !desafioSeleccionado) {
-      alert('Seleccione una evaluación')
-      return
-    }
-
-    if (estudiantes.length === 0) {
-      alert('Esta evaluación no tiene estudiantes para registrar')
-      return
-    }
+    if (!evaluacionSeleccionada || !desafioSeleccionado) return alert('Seleccione una evaluación')
+    if (!estudiantes.length) return alert('Esta evaluación no tiene estudiantes para registrar')
 
     setGuardando(true)
 
     try {
       for (const estudiante of estudiantes) {
+        const resultado = resultados[estudiante.id] || {}
         const puntaje = calcularPuntaje(estudiante.id)
-        const nivel = calcularNivel(puntaje)
 
-        await addDoc(collection(db, 'resultados'), {
+        const datos = {
           id_estudiante: estudiante.id,
           id_evaluacion: evaluacionSeleccionada.id,
           id_curso: evaluacionSeleccionada.id_curso,
           id_desafio: evaluacionSeleccionada.id_desafio,
-          ...resultados[estudiante.id],
           puntaje_obtenido: puntaje,
-          puntaje_maximo: desafioSeleccionado.tipo === 'Velocidad Lectora'
-            ? null
-            : desafioSeleccionado.puntaje_maximo,
-          nivel_desempeno: nivel
-        })
+          puntaje_maximo: esVelocidadLectora ? null : Number(desafioSeleccionado.puntaje_maximo),
+          nivel_desempeno: calcularNivel(puntaje)
+        }
+
+        if (esVelocidadLectora) datos.palabras = resultado.palabras || 0
+        else desafioSeleccionado.campos?.forEach(campo => datos[campo] = Number(resultado[campo] || 0))
+
+        if (resultado.id_resultado) await updateDoc(doc(db, 'resultados', resultado.id_resultado), datos)
+        else {
+          const nuevo = await addDoc(collection(db, 'resultados'), datos)
+          setResultados(prev => ({ ...prev, [estudiante.id]: { ...prev[estudiante.id], id_resultado: nuevo.id } }))
+        }
       }
 
       alert('Resultados guardados correctamente')
-      setResultados({})
     } catch (error) {
       console.error(error)
       alert('Ocurrió un error al guardar los resultados')
@@ -187,162 +143,100 @@ function RegistroResultados() {
   }
 
   return (
-    <div className="pagina-resultados">
+    <>
+      <Navbar />
 
-      <h1>Registro de Resultados</h1>
-
-      <Link className="volver" to="/admin">
-        Volver al Dashboard
-      </Link>
-
-      <section className="seccion-resultados">
-
-        <h2>Seleccionar evaluación</h2>
-
-        <div className="seleccion-resultados">
-
-          <div>
-            <label>Evaluación</label>
-
-            <select
-              value={evaluacion}
-              onChange={e => seleccionarEvaluacion(e.target.value)}
-            >
-              <option value="">Seleccione una evaluación</option>
-
-              {evaluaciones.map(item => (
-                <option key={item.id} value={item.id}>
-                  {obtenerCurso(item.id_curso)} - {obtenerDesafio(item.id_desafio)} - {item.fecha_aplicacion}
-                </option>
-              ))}
-
-            </select>
-          </div>
-
-        </div>
-
-      </section>
-
-      {evaluacionSeleccionada && desafioSeleccionado && (
+      <div className="pagina-resultados">
+        <h1>Registro de Resultados</h1>
         <section className="seccion-resultados">
+          <h2>Seleccionar evaluación</h2>
 
-          <h2>{desafioSeleccionado.nombre}</h2>
+          <div className="seleccion-resultados">
+            <div>
+              <label>Evaluación</label>
 
-          <p><strong>Curso:</strong> {obtenerCurso(evaluacionSeleccionada.id_curso)}</p>
+              <select value={evaluacion} onChange={e => seleccionarEvaluacion(e.target.value)}>
+                <option value="">Seleccione una evaluación</option>
 
-          <p><strong>Tipo:</strong> {desafioSeleccionado.tipo}</p>
-
-          <p><strong>Fecha de aplicación:</strong> {evaluacionSeleccionada.fecha_aplicacion}</p>
-
-          {desafioSeleccionado.tipo !== 'Velocidad Lectora' && (
-            <p>
-              <strong>Puntaje máximo:</strong> {desafioSeleccionado.puntaje_maximo}
-            </p>
-          )}
-
-          <div className="rangos-resultados">
-
-            <p>
-              <strong>Logrado:</strong> {desafioSeleccionado.rango_logrado_desde} - {desafioSeleccionado.rango_logrado_hasta}
-            </p>
-
-            <p>
-              <strong>Adecuado:</strong> {desafioSeleccionado.rango_adecuado_desde} - {desafioSeleccionado.rango_adecuado_hasta}
-            </p>
-
-            <p>
-              <strong>Insuficiente:</strong> {desafioSeleccionado.rango_insuficiente_desde} - {desafioSeleccionado.rango_insuficiente_hasta}
-            </p>
-
+                {evaluaciones.map(item => (
+                  <option key={item.id} value={item.id}>
+                    {obtenerCurso(item.id_curso)} - {obtenerDesafio(item.id_desafio)} - {item.fecha_aplicacion}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-
-          <div className="tabla-contenedor">
-
-            <table className="tabla-resultados">
-
-              <thead>
-                <tr>
-
-                  <th>Estudiante</th>
-
-                  {desafioSeleccionado.etiquetas.map(etiqueta => (
-                    <th key={etiqueta}>{etiqueta}</th>
-                  ))}
-
-                  <th>
-                    {desafioSeleccionado.tipo === 'Velocidad Lectora'
-                      ? 'Palabras'
-                      : 'Puntaje'}
-                  </th>
-
-                  <th>Nivel</th>
-
-                </tr>
-              </thead>
-
-              <tbody>
-
-                {estudiantes.map(estudiante => {
-                  const puntaje = calcularPuntaje(estudiante.id)
-                  const nivel = calcularNivel(puntaje)
-
-                  return (
-                    <tr key={estudiante.id}>
-
-                      <td>
-                        {estudiante.nombre} {estudiante.apellido}
-                      </td>
-
-                      {desafioSeleccionado.campos.map(campo => (
-                        <td key={campo}>
-
-                          <input
-                            type="number"
-                            min="0"
-                            value={resultados[estudiante.id]?.[campo] || ''}
-                            onChange={e => cambiarResultado(
-                              estudiante.id,
-                              campo,
-                              e.target.value
-                            )}
-                          />
-
-                        </td>
-                      ))}
-
-                      <td>
-                        {desafioSeleccionado.tipo === 'Velocidad Lectora'
-                          ? puntaje
-                          : `${puntaje} / ${desafioSeleccionado.puntaje_maximo}`}
-                      </td>
-
-                      <td>{nivel}</td>
-
-                    </tr>
-                  )
-                })}
-
-              </tbody>
-
-            </table>
-
-          </div>
-
-          {estudiantes.length === 0 && (
-            <p>No hay estudiantes registrados en este curso.</p>
-          )}
-
-          <button
-            onClick={guardarResultados}
-            disabled={guardando || estudiantes.length === 0}
-          >
-            {guardando ? 'Guardando...' : 'Guardar todos los resultados'}
-          </button>
-
         </section>
-      )}
 
-    </div>
+        {evaluacionSeleccionada && desafioSeleccionado && (
+          <section className="seccion-resultados">
+
+            <h2>{desafioSeleccionado.nombre}</h2>
+
+            <p><strong>Curso:</strong> {obtenerCurso(evaluacionSeleccionada.id_curso)}</p>
+            <p><strong>Tipo:</strong> {desafioSeleccionado.tipo}</p>
+            <p><strong>Fecha:</strong> {evaluacionSeleccionada.fecha_aplicacion}</p>
+
+            {!esVelocidadLectora && <p><strong>Puntaje máximo:</strong> {desafioSeleccionado.puntaje_maximo}</p>}
+
+            <div className="rangos-resultados">
+              <p><strong>Insuficiente:</strong> 0 - {Number(desafioSeleccionado.adecuado_desde) - 1}</p>
+              <p><strong>Adecuado:</strong> {desafioSeleccionado.adecuado_desde} - {Number(desafioSeleccionado.logrado_desde) - 1}</p>
+              <p><strong>Logrado:</strong> {desafioSeleccionado.logrado_desde} - {puntajeMaximo}</p>
+            </div>
+
+            <div className="tabla-contenedor">
+              <table className="tabla-resultados">
+                <thead>
+                  <tr>
+                    <th>Estudiante</th>
+
+                    {esVelocidadLectora ? <th>Palabras</th> : desafioSeleccionado.etiquetas?.map(etiqueta => <th key={etiqueta}>{etiqueta}</th>)}
+
+                    <th>Puntaje</th>
+                    <th>Nivel</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {estudiantes.map(estudiante => {
+                    const puntaje = calcularPuntaje(estudiante.id)
+
+                    return (
+                      <tr key={estudiante.id}>
+                        <td>{estudiante.nombre} {estudiante.apellido}</td>
+
+                        {esVelocidadLectora ? (
+                          <td>
+                            <input type="number" min="0" value={resultados[estudiante.id]?.palabras ?? ''} onChange={e => cambiarResultado(estudiante.id, 'palabras', e.target.value)} />
+                          </td>
+                        ) : (
+                          desafioSeleccionado.campos?.map(campo => (
+                            <td key={campo}>
+                              <input type="number" min="0" value={resultados[estudiante.id]?.[campo] ?? ''} onChange={e => cambiarResultado(estudiante.id, campo, e.target.value)} />
+                            </td>
+                          ))
+                        )}
+
+                        <td>{esVelocidadLectora ? puntaje : `${puntaje} / ${desafioSeleccionado.puntaje_maximo}`}</td>
+                        <td>{calcularNivel(puntaje)}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {!estudiantes.length && <p>No hay estudiantes registrados en este curso.</p>}
+
+            <button onClick={guardarResultados} disabled={guardando || !estudiantes.length}>
+              {guardando ? 'Guardando...' : 'Guardar todos los resultados'}
+            </button>
+
+          </section>
+        )}
+      </div>
+    </>
   )
 }
 
