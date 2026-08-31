@@ -1,18 +1,11 @@
-import Navbar from '../components/Navbar'
-import './Dashboard.css'
+import PanelBienvenida from '../components/layout/PanelBienvenida'
 
 function AdminDashboard() {
   return (
-    <>
-      <Navbar />
-
-      <main className="pagina-panel">
-        <section className="tarjeta-panel">
-          <h1>Panel de Administración</h1>
-          <p>Bienvenido al panel de administración.</p>
-        </section>
-      </main>
-    </>
+    <PanelBienvenida
+      titulo="Panel de Administración"
+      mensaje="Bienvenido al panel de administración."
+    />
   )
 }
 

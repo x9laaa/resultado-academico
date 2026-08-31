@@ -1,0 +1,398 @@
+:root {
+  --nivel-logrado: #0ca30c;
+  --nivel-adecuado: #fab219;
+  --nivel-insuficiente: #d03b3b;
+
+  --banda-logrado: #e7f6e7;
+  --banda-adecuado: #fef6e1;
+  --banda-insuficiente: #fdecec;
+
+  --ink: #25313b;
+  --muted: #8a94a0;
+  --hairline: #e5e7eb;
+}
+
+.pagina-reportes {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.pagina-reportes h1 {
+  margin: 0 0 20px;
+  font-size: 28px;
+}
+
+.seccion-reportes {
+  width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+}
+
+.seccion-reportes h2 {
+  margin: 0 0 14px;
+  font-size: 20px;
+}
+
+.reportes-nota {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.reportes-vacio {
+  margin: 0;
+  padding: 22px;
+  text-align: center;
+  color: #777;
+  border: 1px dashed #ccc;
+  border-radius: 7px;
+}
+
+.reportes-resumen-linea {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.reportes-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.reportes-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.barra-cursos {
+  flex: 0 0 220px;
+  position: sticky;
+  top: 20px;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+}
+
+.barra-cursos-titulo {
+  margin: 0 0 10px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--muted);
+}
+
+.barra-cursos-vacio {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.barra-cursos ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.barra-cursos button {
+  width: 100%;
+  text-align: left;
+  padding: 9px 11px;
+  border: 0;
+  border-left: 3px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.barra-cursos button:hover {
+  background: #f1f3f5;
+}
+
+.barra-cursos button.activo {
+  background: #eaf2fd;
+  border-left-color: #2563eb;
+  font-weight: 600;
+}
+
+.reportes-main .campo {
+  max-width: 420px;
+}
+
+.nivel-fill-logrado { background: var(--nivel-logrado); fill: var(--nivel-logrado); }
+.nivel-fill-adecuado { background: var(--nivel-adecuado); fill: var(--nivel-adecuado); }
+.nivel-fill-insuficiente { background: var(--nivel-insuficiente); fill: var(--nivel-insuficiente); }
+
+.leyenda-niveles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.leyenda-niveles li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.punto-nivel {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.distribucion-barra {
+  display: flex;
+  width: 100%;
+  height: 26px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #f1f3f5;
+}
+
+.distribucion-seg {
+  display: block;
+  height: 100%;
+  border-right: 2px solid #fff;
+  box-sizing: border-box;
+}
+
+.distribucion-seg:last-child {
+  border-right: 0;
+}
+
+.distribucion-pie {
+  margin-top: 12px;
+}
+
+.distribucion-promedio {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.barras-comparativa {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.barras-comparativa li {
+  display: grid;
+  grid-template-columns: 170px 1fr 74px;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 0;
+}
+
+.barra-nombre {
+  font-size: 13px;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.barra-pista {
+  display: block;
+  height: 16px;
+  background: #f1f3f5;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.barra-valor-fill {
+  display: block;
+  height: 100%;
+  border-radius: 0 3px 3px 0;
+  min-width: 3px;
+}
+
+.barra-cifra {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  text-align: right;
+}
+
+.grid-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.tarjeta-estudiante {
+  border: 1px solid var(--hairline);
+  border-radius: 9px;
+  padding: 14px;
+  background: #fff;
+}
+
+.tarjeta-estudiante--vacia {
+  opacity: .7;
+}
+
+.tarjeta-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.tarjeta-estudiante h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.tarjeta-sin-datos {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.tarjeta-cifra {
+  margin: 8px 0 6px;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.tarjeta-cifra strong {
+  font-size: 22px;
+}
+
+.tarjeta-delta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.linea-progreso {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 4px 0 8px;
+}
+
+.banda-insuficiente { fill: var(--banda-insuficiente); }
+.banda-adecuado { fill: var(--banda-adecuado); }
+.banda-logrado { fill: var(--banda-logrado); }
+
+.linea-progreso-trazo {
+  stroke: #566573;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.linea-progreso-punto {
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+
+.linea-progreso-cifra {
+  fill: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.linea-progreso-fecha {
+  fill: var(--muted);
+  font-size: 10px;
+}
+
+.tarjeta-campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tarjeta-campos li {
+  display: flex;
+  gap: 5px;
+  align-items: baseline;
+  padding: 3px 8px;
+  font-size: 12px;
+  background: #f3f5f7;
+  border-radius: 5px;
+}
+
+.tarjeta-campos strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.tarjeta-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.tarjeta-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .reportes-layout {
+    flex-direction: column;
+  }
+
+  .barra-cursos {
+    position: static;
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .barra-cursos ul {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .barra-cursos button {
+    width: auto;
+    white-space: nowrap;
+    border-left: 0;
+    border-bottom: 3px solid transparent;
+  }
+
+  .barra-cursos button.activo {
+    border-left: 0;
+    border-bottom-color: #2563eb;
+  }
+}
+
+@media (max-width: 800px) {
+  .pagina-reportes {
+    padding: 12px;
+  }
+
+  .barras-comparativa li {
+    grid-template-columns: 110px 1fr 60px;
+    gap: 8px;
+  }
+}

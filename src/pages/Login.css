@@ -28,27 +28,6 @@
   margin-top: 22px;
 }
 
-.campo label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.campo input,
-.campo select {
-  width: 100%;
-  padding: 9px 10px;
-  border: 1px solid #b8c1c9;
-  border-radius: 4px;
-}
-
-.campo input:focus,
-.campo select:focus {
-  outline: 2px solid #b8d7ef;
-  border-color: #3175a4;
-}
-
 button {
   padding: 9px 14px;
   color: #ffffff;

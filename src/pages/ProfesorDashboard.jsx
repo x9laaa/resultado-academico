@@ -1,17 +1,7 @@
-import './Dashboard.css'
-import Navbar from '../components/Navbar'
+import PanelBienvenida from '../components/layout/PanelBienvenida'
 
 function ProfesorDashboard() {
-    return (
-        <>
-        <Navbar />
-        <main className="pagina-panel">
-            <section className="tarjeta-panel">
-                <h1>Panel del Profesor</h1>
-                <p>Bienvenido al panel del profesor.</p>
-            </section>
-        </main>
-        </>
-    );
+  return <PanelBienvenida titulo="Panel del Profesor" mensaje="Bienvenido al panel del profesor." />
 }
-export default ProfesorDashboard;
+
+export default ProfesorDashboard

@@ -1,17 +1,7 @@
-import './Dashboard.css'
-import Navbar from '../components/Navbar'
+import PanelBienvenida from '../components/layout/PanelBienvenida'
 
 function UtpDashboard() {
-    return (
-        <>
-        <Navbar />
-        <main className="pagina-panel">
-            <section className="tarjeta-panel">
-                <h1>Panel UTP</h1>
-                <p>Bienvenido al panel de la UTP.</p>
-            </section>
-        </main>
-        </>
-    );
+  return <PanelBienvenida titulo="Panel UTP" mensaje="Bienvenido al panel de la UTP." />
 }
-export default UtpDashboard;
+
+export default UtpDashboard
