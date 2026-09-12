@@ -46,6 +46,25 @@ button:disabled {
   background: #8ba1b0;
 }
 
+.enlace-recuperar {
+  justify-self: center;
+  padding: 4px;
+  font-size: 14px;
+  color: #28638a;
+  text-decoration: underline;
+  background: none;
+}
+
+.enlace-recuperar:hover {
+  color: #1e4e6e;
+  background: none;
+}
+
+.enlace-recuperar:disabled {
+  color: #8ba1b0;
+  background: none;
+}
+
 .mensaje {
   margin: 0;
   padding: 9px;
@@ -53,4 +72,13 @@ button:disabled {
   color: #8b2d2d;
   background: #fff1f1;
   border-left: 3px solid #bd5555;
+}
+
+.aviso {
+  margin: 0;
+  padding: 9px;
+  font-size: 14px;
+  color: #1f5136;
+  background: #eef8f1;
+  border-left: 3px solid #4a9a6c;
 }

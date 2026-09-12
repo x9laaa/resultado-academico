@@ -50,14 +50,6 @@ border:1px solid #d9dee3;
 border-radius:4px;
 }
 
-.informacion-desafio{
-grid-column:1/-1;
-padding:12px;
-background:#f5f7f8;
-border:1px solid #d9dee3;
-border-radius:4px;
-}
-
 .clasificacion{
 grid-column:1/-1;
 padding:24px;
@@ -70,38 +62,6 @@ border-radius:6px;
 .clasificacion h3{
 margin:0 0 24px;
 font-size:18px;
-}
-
-.clasificacion-desafio{
-grid-column:1/-1;
-padding:24px;
-margin-top:8px;
-background:#fafafa;
-border:1px solid #d9dee3;
-border-radius:6px;
-}
-
-.clasificacion-desafio h3{
-margin:0 0 24px;
-font-size:18px;
-}
-
-.numeros-superiores{
-display:flex;
-justify-content:space-between;
-margin-bottom:8px;
-font-size:14px;
-font-weight:600;
-}
-
-.barra-clasificacion{
-display:flex;
-width:100%;
-height:50px;
-overflow:hidden;
-border:1px solid #d9dee3;
-border-radius:5px;
-box-sizing:border-box;
 }
 
 .rango{
@@ -130,82 +90,6 @@ background:#f4ebc9;
 
 .logrado{
 background:#d8ead8;
-}
-
-.controles-clasificacion{
-display:grid;
-grid-template-columns:repeat(2,minmax(0,1fr));
-gap:24px;
-margin-top:24px;
-}
-
-.slider-grupo label{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:10px;
-font-size:14px;
-}
-
-.slider-grupo strong{
-font-size:15px;
-}
-
-.slider-grupo input{
-width:100%;
-padding:0;
-cursor:pointer;
-}
-
-.resumen-rangos{
-display:grid;
-grid-template-columns:repeat(3,minmax(0,1fr));
-gap:12px;
-margin-top:24px;
-}
-
-.resumen-rangos div{
-display:flex;
-flex-direction:column;
-gap:4px;
-padding:14px 16px;
-border-radius:6px;
-}
-
-.resumen-rangos strong{
-font-size:14px;
-font-weight:600;
-}
-
-.resumen-rangos span{
-font-size:14px;
-}
-
-.resumen-rangos div:nth-child(1){
-background:#fbe4e2;
-}
-
-.resumen-rangos div:nth-child(1) strong,
-.resumen-rangos div:nth-child(1) span{
-color:#9a2f26;
-}
-
-.resumen-rangos div:nth-child(2){
-background:#faf0d4;
-}
-
-.resumen-rangos div:nth-child(2) strong,
-.resumen-rangos div:nth-child(2) span{
-color:#8a6a12;
-}
-
-.resumen-rangos div:nth-child(3){
-background:#e0f0e2;
-}
-
-.resumen-rangos div:nth-child(3) strong,
-.resumen-rangos div:nth-child(3) span{
-color:#2f6b3a;
 }
 
 .resultado-rangos{
@@ -265,11 +149,6 @@ grid-template-columns:1fr;
 }
 }
 
-.mensaje-clasificacion{
-margin:0;
-color:#45535e;
-}
-
 .botones-desafio{
 grid-column:1/-1;
 display:flex;
@@ -285,7 +164,7 @@ color:#ffffff;
 cursor:pointer;
 }
 
-.botones-desafio button:last-child{
+.botones-desafio button + button{
 background:#ffffff;
 color:#28638a;
 }
@@ -318,7 +197,13 @@ padding:7px 10px;
 border:1px solid #d9dee3;
 border-radius:4px;
 background:#ffffff;
+color:#45535e;
 cursor:pointer;
+}
+
+.tabla-desafios button:hover{
+background:#f5f7f8;
+border-color:#b8c1c9;
 }
 
 @media(max-width:600px){
@@ -334,20 +219,9 @@ padding:18px;
 grid-template-columns:1fr;
 }
 
-.controles-clasificacion{
-grid-template-columns:1fr;
-}
-
-.resumen-rangos{
-grid-template-columns:1fr;
-}
-
 .rango{
 font-size:11px;
 padding:0 3px;
 }
 
-.numeros-superiores{
-font-size:12px;
-}
 }

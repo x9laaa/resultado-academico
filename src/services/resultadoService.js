@@ -1,4 +1,4 @@
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where } from 'firebase/firestore'
+import { collection, getDocs, doc, query, where, writeBatch } from 'firebase/firestore'
 import { db } from '../config'
 
 const resultadosRef = collection(db, 'resultados')
@@ -14,46 +14,17 @@ export const obtenerResultadosEvaluacion = async idEvaluacion => {
   return datos.docs.map(item => ({ id: item.id, ...item.data() }))
 }
 
-export const obtenerResultadoEstudiante = async (idEvaluacion, idEstudiante) => {
-  const consulta = query(
-    resultadosRef,
-    where('id_evaluacion', '==', idEvaluacion),
-    where('id_estudiante', '==', idEstudiante)
-  )
+export const guardarResultadosLote = async (aGuardar = [], aEliminar = []) => {
+  if (!aGuardar.length && !aEliminar.length) return
 
-  const datos = await getDocs(consulta)
+  const lote = writeBatch(db)
 
-  if (datos.empty) return null
+  aGuardar.forEach(({ id, datos }) => {
+    const referencia = id ? doc(db, 'resultados', id) : doc(resultadosRef)
+    lote.set(referencia, datos)
+  })
 
-  const resultado = datos.docs[0]
+  aEliminar.forEach(id => lote.delete(doc(db, 'resultados', id)))
 
-  return { id: resultado.id, ...resultado.data() }
-}
-
-export const crearResultado = async datos => {
-  return await addDoc(resultadosRef, datos)
-}
-
-export const actualizarResultado = async (id, datos) => {
-  await updateDoc(doc(db, 'resultados', id), datos)
-}
-
-export const guardarResultado = async (datos, idResultado = null) => {
-  if (idResultado) {
-    await actualizarResultado(idResultado, datos)
-    return idResultado
-  }
-
-  const resultado = await crearResultado(datos)
-  return resultado.id
-}
-
-export const eliminarResultado = async id => {
-  await deleteDoc(doc(db, 'resultados', id))
-}
-
-export const obtenerResultadosPorCurso = async idCurso => {
-  const consulta = query(resultadosRef, where('id_curso', '==', idCurso))
-  const datos = await getDocs(consulta)
-  return datos.docs.map(item => ({ id: item.id, ...item.data() }))
+  await lote.commit()
 }

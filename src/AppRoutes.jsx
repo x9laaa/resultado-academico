@@ -13,6 +13,7 @@ import GestionEvaluaciones from './pages/GestionEvaluaciones'
 import Reportes from './pages/Reportes'
 import Pendientes from './pages/Pendientes'
 import Ficha from './pages/Ficha'
+import NoEncontrada from './pages/NoEncontrada'
 
 const RUTAS = [
   { path: '/admin', roles: ['admin'], Pagina: AdminDashboard },
@@ -58,6 +59,8 @@ function AppRoutes() {
           }
         />
       ))}
+
+      <Route path="*" element={<NoEncontrada />} />
     </Routes>
   )
 }

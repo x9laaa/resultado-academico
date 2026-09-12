@@ -61,7 +61,6 @@ function construirTablero({ cursos, desafios, evaluaciones, estudiantes, resulta
     pendientes,
     completas: items.filter(i => i.estado === 'completa').length,
     sinAlumnos: items.filter(i => i.estado === 'sin-alumnos').length,
-    totalEvaluaciones: items.length,
     alumnosPorRegistrar: pendientes.reduce((suma, i) => suma + i.faltantes, 0)
   }
 }

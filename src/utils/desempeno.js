@@ -1,4 +1,4 @@
-export const NIVELES = {
+const NIVELES = {
   LOGRADO: 'Logrado',
   ADECUADO: 'Adecuado',
   INSUFICIENTE: 'Insuficiente'
@@ -8,8 +8,7 @@ export const ORDEN_NIVELES = [NIVELES.LOGRADO, NIVELES.ADECUADO, NIVELES.INSUFIC
 
 export const esVelocidadLectora = desafio => desafio?.tipo === 'Velocidad Lectora'
 
-export const puntajeMaximoDesafio = desafio =>
-  esVelocidadLectora(desafio) ? 200 : Number(desafio?.puntaje_maximo || 0)
+export const puntajeMaximoDesafio = desafio => Number(desafio?.puntaje_maximo || 0)
 
 export const calcularPuntaje = (desafio, resultado = {}) => {
   if (!desafio) return 0

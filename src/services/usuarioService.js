@@ -1,5 +1,6 @@
-import { collection, doc, getDoc, getDocs, setDoc, onSnapshot } from 'firebase/firestore'
-import { db } from '../config'
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc, onSnapshot } from 'firebase/firestore'
+import { sendPasswordResetEmail } from 'firebase/auth'
+import { auth, db } from '../config'
 
 const usuariosRef = collection(db, 'usuarios')
 
@@ -23,4 +24,12 @@ export const suscribirseUsuarios = (alCambiar, alFallar) => {
 
 export const crearUsuarioEnFirestore = async (uid, datos) => {
   await setDoc(doc(db, 'usuarios', uid), { uid, ...datos })
+}
+
+export const actualizarUsuario = async (uid, datos) => {
+  await updateDoc(doc(db, 'usuarios', uid), datos)
+}
+
+export const enviarCorreoRestablecimiento = async correo => {
+  await sendPasswordResetEmail(auth, correo)
 }

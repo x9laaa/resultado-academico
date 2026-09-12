@@ -12,8 +12,11 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const cancelar = onAuthStateChanged(auth, async usuarioActual => {
+      setCargando(true)
+      setUsuario(usuarioActual)
+      setPerfil(null)
+
       try {
-        setUsuario(usuarioActual)
         setPerfil(usuarioActual ? await obtenerUsuarioPorId(usuarioActual.uid) : null)
       } catch (error) {
         console.error('Error al obtener usuario:', error)

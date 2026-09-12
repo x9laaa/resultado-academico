@@ -7,7 +7,7 @@ import { obtenerEvaluaciones, crearEvaluacion } from '../services/evaluacionServ
 import { obtenerDesafios } from '../services/desafioService'
 import { obtenerCursos } from '../services/cursoService'
 import { obtenerEstudiantes, obtenerEstudiantesCurso } from '../services/estudianteService'
-import { obtenerResultados, obtenerResultadosEvaluacion, guardarResultado } from '../services/resultadoService'
+import { obtenerResultados, obtenerResultadosEvaluacion, guardarResultadosLote } from '../services/resultadoService'
 
 import { convertirFecha } from '../utils/fecha'
 import {
@@ -242,48 +242,80 @@ export function useRegistroResultados() {
   const calcularNivel = puntaje => calcularNivelBase(desafioSeleccionado, puntaje)
   const tieneResultado = idEstudiante => tieneResultadoBase(desafioSeleccionado, resultados[idEstudiante] || {})
 
+  /**
+   * Arma el documento que se guardará en Firestore para un estudiante.
+   */
+  const construirDatos = (idEstudiante, resultado) => {
+    const puntaje = calcularPuntaje(idEstudiante)
+
+    const datos = {
+      id_estudiante: idEstudiante,
+      id_evaluacion: evaluacionSeleccionada.id,
+      id_curso: evaluacionSeleccionada.id_curso,
+      id_desafio: evaluacionSeleccionada.id_desafio,
+      puntaje_obtenido: puntaje,
+      puntaje_maximo: puntajeMaximo,
+      nivel_desempeno: calcularNivel(puntaje)
+    }
+
+    if (esVelocidadLectora) {
+      datos.palabras = Number(resultado.palabras || 0)
+    } else {
+      desafioSeleccionado.campos?.forEach(campo => {
+        datos[campo] = Number(resultado[campo] || 0)
+      })
+    }
+
+    return datos
+  }
+
   const guardarResultados = async () => {
     if (!evaluacionSeleccionada || !desafioSeleccionado) {
       toast.error('Seleccione una evaluación')
       return
     }
+
     if (!estudiantes.length) {
       toast.error('Esta evaluación no tiene estudiantes para registrar')
+      return
+    }
+
+    const aGuardar = []
+    const aEliminar = []
+
+    estudiantes.forEach(estudiante => {
+      const resultado = resultados[estudiante.id] || {}
+      const idExistente = resultado.id || null
+
+      // Un estudiante sin datos ingresados NO se guarda: antes quedaba
+      // registrado con puntaje 0 y nivel "Insuficiente", lo que hacía que
+      // Pendientes lo contara como completo y que Reportes bajara el
+      // promedio del curso con ceros que nunca se rindieron.
+      if (!tieneResultado(estudiante.id)) {
+        // Si además tenía un resultado guardado antes y ahora se vació el
+        // formulario, se elimina para que el dato no quede desactualizado.
+        if (idExistente) aEliminar.push(idExistente)
+        return
+      }
+
+      aGuardar.push({ id: idExistente, datos: construirDatos(estudiante.id, resultado) })
+    })
+
+    if (!aGuardar.length && !aEliminar.length) {
+      toast.info('No hay resultados para guardar')
       return
     }
 
     setGuardando(true)
 
     try {
-      for (const estudiante of estudiantes) {
-        const resultado = resultados[estudiante.id] || {}
-        const puntaje = calcularPuntaje(estudiante.id)
-
-        const datos = {
-          id_estudiante: estudiante.id,
-          id_evaluacion: evaluacionSeleccionada.id,
-          id_curso: evaluacionSeleccionada.id_curso,
-          id_desafio: evaluacionSeleccionada.id_desafio,
-          puntaje_obtenido: puntaje,
-          puntaje_maximo: esVelocidadLectora ? null : Number(desafioSeleccionado.puntaje_maximo),
-          nivel_desempeno: calcularNivel(puntaje)
-        }
-
-        if (esVelocidadLectora) {
-          datos.palabras = Number(resultado.palabras || 0)
-        } else {
-          desafioSeleccionado.campos?.forEach(campo => {
-            datos[campo] = Number(resultado[campo] || 0)
-          })
-        }
-
-        await guardarResultado(datos, resultado.id_resultado || resultado.id || null)
-      }
+      // Una sola escritura atómica en vez de un await por estudiante.
+      await guardarResultadosLote(aGuardar, aEliminar)
 
       await cargarDatos()
       await seleccionarEvaluacion(evaluacionSeleccionada.id)
 
-      toast.exito('Resultados guardados correctamente')
+      toast.exito(`Resultados guardados: ${aGuardar.length} de ${estudiantes.length} estudiantes`)
     } catch (error) {
       console.error(error)
       toast.error('Ocurrió un error al guardar los resultados')

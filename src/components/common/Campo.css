@@ -18,3 +18,12 @@
   outline: 2px solid #b8d7ef;
   border-color: #3175a4;
 }
+
+.campo input:disabled,
+.campo select:disabled,
+.campo input[readonly] {
+  color: #6b7780;
+  cursor: not-allowed;
+  background: #eef1f3;
+  border-color: #d3d9de;
+}

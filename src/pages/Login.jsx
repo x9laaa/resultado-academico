@@ -3,16 +3,28 @@ import { useLogin } from '../hooks/useLogin'
 import './Login.css'
 
 function Login() {
-  const { correo, setCorreo, password, setPassword, mensaje, cargando, iniciarSesion } = useLogin()
+  const {
+    correo,
+    setCorreo,
+    password,
+    setPassword,
+    mensaje,
+    aviso,
+    cargando,
+    iniciarSesion,
+    recuperarPassword,
+    enviandoRecuperacion
+  } = useLogin()
 
   return (
     <main className="pagina-login">
       <section className="login-contenedor">
-        <h1>Iniciar sesion</h1>
+        <h1>Iniciar sesión</h1>
 
         <form onSubmit={iniciarSesion}>
-          <Campo label="Correo electronico">
+          <Campo label="Correo electrónico" htmlFor="login-correo">
             <input
+              id="login-correo"
               type="email"
               value={correo}
               onChange={e => setCorreo(e.target.value)}
@@ -21,8 +33,9 @@ function Login() {
             />
           </Campo>
 
-          <Campo label="Contrasena">
+          <Campo label="Contraseña" htmlFor="login-password">
             <input
+              id="login-password"
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
@@ -32,9 +45,19 @@ function Login() {
           </Campo>
 
           {mensaje && <p className="mensaje">{mensaje}</p>}
+          {aviso && <p className="aviso">{aviso}</p>}
 
           <button type="submit" disabled={cargando}>
             {cargando ? 'Ingresando...' : 'Iniciar sesión'}
+          </button>
+
+          <button
+            type="button"
+            className="enlace-recuperar"
+            onClick={recuperarPassword}
+            disabled={enviandoRecuperacion}
+          >
+            {enviandoRecuperacion ? 'Enviando correo...' : '¿Olvidó su contraseña?'}
           </button>
         </form>
       </section>

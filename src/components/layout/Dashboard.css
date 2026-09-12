@@ -21,18 +21,6 @@
   color: #52606b;
 }
 
-.enlace-panel {
-  display: inline-block;
-  margin-top: 12px;
-  color: #28638a;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.enlace-panel:hover {
-  text-decoration: underline;
-}
-
 @media (max-width: 600px) {
   .pagina-panel {
     padding: 24px 16px;
