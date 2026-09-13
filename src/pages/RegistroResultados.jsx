@@ -66,6 +66,8 @@ function RegistroResultados() {
           calcularPuntaje={r.calcularPuntaje}
           calcularNivel={r.calcularNivel}
           cambiarResultado={r.cambiarResultado}
+          errorResultado={r.errorResultado}
+          hayErrores={r.hayErrores}
           onGuardar={r.guardarResultados}
         />
       )}

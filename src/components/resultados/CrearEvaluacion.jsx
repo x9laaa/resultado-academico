@@ -51,16 +51,6 @@ function CrearEvaluacion({ cursos, desafios, valores, onCampo, onCrear, creando 
               />
             </div>
 
-            <div>
-              <label>Año</label>
-              <input
-                type="number"
-                value={valores.anio}
-                onChange={e => onCampo('anio', e.target.value)}
-                required
-              />
-            </div>
-
             <button type="submit" className="boton-crear" disabled={creando}>
               {creando ? 'Creando...' : 'Crear evaluación'}
             </button>

@@ -124,3 +124,45 @@ grid-column:auto;
 width:100%;
 }
 }
+
+.acciones-evaluacion{
+display:flex;
+flex-direction:row;
+flex-wrap:wrap;
+gap:8px;
+}
+
+.formulario-evaluaciones .acciones-evaluacion{
+grid-column:1/-1;
+flex-direction:row;
+}
+
+.tabla-evaluaciones .acciones-evaluacion button{
+padding:7px 10px;
+font-size:14px;
+background:#ffffff;
+color:#45535e;
+border:1px solid #d9dee3;
+border-radius:4px;
+cursor:pointer;
+}
+
+.tabla-evaluaciones .acciones-evaluacion button:hover{
+background:#f5f7f8;
+border-color:#b8c1c9;
+}
+
+.formulario-evaluaciones .boton-secundario{
+background:#ffffff;
+color:#28638a;
+border:1px solid #28638a;
+}
+
+.formulario-evaluaciones .boton-secundario:hover{
+background:#f0f5f9;
+}
+
+.acciones-evaluacion button:disabled{
+cursor:not-allowed;
+opacity:.55;
+}

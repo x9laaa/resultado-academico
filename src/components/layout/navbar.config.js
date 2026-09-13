@@ -19,7 +19,8 @@ export const MENUS_POR_ROL = {
     { to: '/utp/resultados', etiqueta: 'Resultados' },
     { to: '/utp/pendientes', etiqueta: 'Pendientes' },
     { to: '/utp/reportes', etiqueta: 'Reportes' },
-    { to: '/utp/ficha', etiqueta: 'Fichas' }
+    { to: '/utp/ficha', etiqueta: 'Fichas' },
+    { to: '/utp/evaluaciones', etiqueta: 'Evaluaciones' }
   ],
   profesor: [
     { to: '/profesor', etiqueta: 'Inicio' },

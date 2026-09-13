@@ -15,6 +15,8 @@ function DetalleEvaluacion({
   calcularPuntaje,
   calcularNivel,
   cambiarResultado,
+  errorResultado,
+  hayErrores,
   onGuardar
 }) {
   const total = estudiantes.length
@@ -25,7 +27,7 @@ function DetalleEvaluacion({
   return (
     <section className="seccion-resultados detalle-evaluacion">
       <button type="button" className="volver-link" onClick={onVolver}>
-        ← Volver a evaluaciones
+        Volver a evaluaciones
       </button>
 
       <header className="detalle-cabecera">
@@ -99,19 +101,22 @@ function DetalleEvaluacion({
             calcularPuntaje={calcularPuntaje}
             calcularNivel={calcularNivel}
             cambiarResultado={cambiarResultado}
+            errorResultado={errorResultado}
           />
 
           <div className="barra-guardar">
-            <span className="barra-guardar-estado">
-              {pendientes > 0
-                ? `${pendientes} de ${total} sin registrar`
-                : 'Todo listo para guardar'}
+            <span className={`barra-guardar-estado${hayErrores ? ' barra-guardar-error' : ''}`}>
+              {hayErrores
+                ? 'Corrija los valores marcados en rojo para poder guardar'
+                : pendientes > 0
+                  ? `${pendientes} de ${total} sin registrar`
+                  : 'Todo listo para guardar'}
             </span>
             <button
               type="button"
               className="boton-guardar"
               onClick={onGuardar}
-              disabled={guardando}
+              disabled={guardando || hayErrores}
             >
               {guardando ? 'Guardando…' : 'Guardar resultados'}
             </button>

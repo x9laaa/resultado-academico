@@ -42,7 +42,6 @@ export function useGestionCursos() {
 
   useEffect(() => {
     cargarDatos()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const ejecutar = async (accion, errorMsg, okMsg) => {

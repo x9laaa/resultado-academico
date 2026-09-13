@@ -1,14 +1,16 @@
-import { tieneResultado } from '../../utils/desempeno'
+import { tieneResultado, topeCampo } from '../../utils/desempeno'
 
-const MAX_LENGUAJE = {
-  localizar: 'max_localizar',
-  interpretar: 'max_interpretar',
-  reflexionar: 'max_reflexionar'
-}
-
-function TablaResultados({ estudiantes, resultados, desafio, esVelocidadLectora, calcularPuntaje, calcularNivel, cambiarResultado }) {
+function TablaResultados({
+  estudiantes,
+  resultados,
+  desafio,
+  esVelocidadLectora,
+  calcularPuntaje,
+  calcularNivel,
+  cambiarResultado,
+  errorResultado
+}) {
   const puntajeMaximo = Number(desafio.puntaje_maximo) || 0
-  const topeCampo = campo => desafio[MAX_LENGUAJE[campo]] || undefined
 
   return (
     <div className="tabla-contenedor">
@@ -36,13 +38,17 @@ function TablaResultados({ estudiantes, resultados, desafio, esVelocidadLectora,
             const puntaje = calcularPuntaje(estudiante.id)
             const nivel = calcularNivel(puntaje)
             const registrada = tieneResultado(desafio, resultado)
-            const excede = !esVelocidadLectora && puntajeMaximo > 0 && puntaje > puntajeMaximo
+            const error = errorResultado ? errorResultado(estudiante.id) : null
+
+            const clases = [registrada ? 'fila-registrada' : 'fila-sin-registrar']
+            if (error) clases.push('fila-invalida')
 
             return (
-              <tr key={estudiante.id} className={registrada ? 'fila-registrada' : 'fila-pendiente'}>
+              <tr key={estudiante.id} className={clases.join(' ')}>
                 <td>
                   <span className="marca-fila" aria-hidden="true" />
                   {estudiante.nombre} {estudiante.apellido}
+                  {error && <span className="error-resultado">{error}</span>}
                 </td>
 
                 {esVelocidadLectora ? (
@@ -50,7 +56,9 @@ function TablaResultados({ estudiantes, resultados, desafio, esVelocidadLectora,
                     <input
                       type="number"
                       min="0"
+                      max={puntajeMaximo || undefined}
                       inputMode="numeric"
+                      aria-invalid={Boolean(error)}
                       value={resultado.palabras ?? ''}
                       onChange={e => cambiarResultado(estudiante.id, 'palabras', e.target.value)}
                     />
@@ -61,8 +69,9 @@ function TablaResultados({ estudiantes, resultados, desafio, esVelocidadLectora,
                       <input
                         type="number"
                         min="0"
-                        max={topeCampo(campo)}
+                        max={topeCampo(desafio, campo) || undefined}
                         inputMode="numeric"
+                        aria-invalid={Boolean(error)}
                         value={resultado[campo] ?? ''}
                         onChange={e => cambiarResultado(estudiante.id, campo, e.target.value)}
                       />
@@ -70,7 +79,7 @@ function TablaResultados({ estudiantes, resultados, desafio, esVelocidadLectora,
                   ))
                 )}
 
-                <td className={excede ? 'puntaje-excedido' : undefined}>
+                <td className={error ? 'puntaje-excedido' : undefined}>
                   {esVelocidadLectora
                     ? puntaje
                     : `${puntaje} / ${desafio.puntaje_maximo}`}

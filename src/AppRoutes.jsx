@@ -40,7 +40,8 @@ const RUTAS = [
   { path: '/utp/resultados', roles: ['utp'], Pagina: RegistroResultados },
   { path: '/utp/pendientes', roles: ['utp'], Pagina: Pendientes },
   { path: '/utp/reportes', roles: ['utp'], Pagina: Reportes },
-  { path: '/utp/ficha', roles: ['utp'], Pagina: Ficha }
+  { path: '/utp/ficha', roles: ['utp'], Pagina: Ficha },
+  { path: '/utp/evaluaciones', roles: ['utp'], Pagina: GestionEvaluaciones }
 ]
 
 function AppRoutes() {

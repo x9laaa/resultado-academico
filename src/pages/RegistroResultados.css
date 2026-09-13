@@ -336,7 +336,7 @@
   background: #16a34a;
 }
 
-.fila-pendiente td:first-child {
+.fila-sin-registrar td:first-child {
   color: #6b7280;
 }
 
@@ -634,4 +634,20 @@
   .barra-guardar-estado {
     display: none;
   }
+}
+.fila-invalida input[type="number"] {
+  border-color: #bd5555;
+  background: #fff7f7;
+}
+
+.error-resultado {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  color: #8b2d2d;
+}
+
+.barra-guardar-error {
+  font-weight: bold;
+  color: #8b2d2d;
 }

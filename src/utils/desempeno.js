@@ -36,3 +36,53 @@ export const calcularNivel = (desafio, puntaje) => {
   if (puntaje >= Number(desafio.adecuado_desde)) return NIVELES.ADECUADO
   return NIVELES.INSUFICIENTE
 }
+
+const TOPES_LENGUAJE = {
+  localizar: 'max_localizar',
+  interpretar: 'max_interpretar',
+  reflexionar: 'max_reflexionar'
+}
+
+export const topeCampo = (desafio, campo) => {
+  const clave = TOPES_LENGUAJE[campo]
+  const tope = clave ? Number(desafio?.[clave] || 0) : 0
+  return tope > 0 ? tope : puntajeMaximoDesafio(desafio)
+}
+
+export const etiquetaCampo = (desafio, campo) => {
+  const posicion = desafio?.campos?.indexOf(campo) ?? -1
+  return desafio?.etiquetas?.[posicion] || campo
+}
+
+export const validarResultado = (desafio, resultado = {}) => {
+  if (!desafio) return null
+
+  const maximo = puntajeMaximoDesafio(desafio)
+
+  if (esVelocidadLectora(desafio)) {
+    const palabras = Number(resultado.palabras)
+    if (Number.isNaN(palabras) || palabras < 0) return 'Las palabras leídas no pueden ser negativas.'
+    if (maximo > 0 && palabras > maximo) return `Las palabras leídas no pueden superar ${maximo}.`
+    return null
+  }
+
+  for (const campo of desafio.campos || []) {
+    const valor = Number(resultado[campo])
+
+    if (Number.isNaN(valor) || valor < 0) {
+      return `${etiquetaCampo(desafio, campo)} no puede ser negativo.`
+    }
+
+    const tope = topeCampo(desafio, campo)
+    if (tope > 0 && valor > tope) {
+      return `${etiquetaCampo(desafio, campo)} no puede superar ${tope}.`
+    }
+  }
+
+  const total = calcularPuntaje(desafio, resultado)
+  if (maximo > 0 && total > maximo) {
+    return `El puntaje total (${total}) supera el máximo de ${maximo}.`
+  }
+
+  return null
+}

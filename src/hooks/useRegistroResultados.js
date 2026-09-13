@@ -15,7 +15,8 @@ import {
   puntajeMaximoDesafio,
   calcularPuntaje as calcularPuntajeBase,
   tieneResultado as tieneResultadoBase,
-  calcularNivel as calcularNivelBase
+  calcularNivel as calcularNivelBase,
+  validarResultado as validarResultadoBase
 } from '../utils/desempeno'
 
 const contarPor = (lista, clave) =>
@@ -48,8 +49,7 @@ export function useRegistroResultados() {
   const [guardando, setGuardando] = useState(false)
   const [cargando, setCargando] = useState(true)
 
-  const anioActual = new Date().getFullYear()
-  const evaluacionVacia = { id_curso: '', id_desafio: '', fecha_aplicacion: '', anio: anioActual }
+  const evaluacionVacia = { id_curso: '', id_desafio: '', fecha_aplicacion: '' }
   const [nuevaEvaluacion, setNuevaEvaluacion] = useState(evaluacionVacia)
   const [creandoEvaluacion, setCreandoEvaluacion] = useState(false)
 
@@ -80,7 +80,6 @@ export function useRegistroResultados() {
 
   useEffect(() => {
     cargarDatos()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const obtenerCurso = id => cursos.find(curso => curso.id === id)?.nombre_curso || 'Curso'
@@ -128,7 +127,7 @@ export function useRegistroResultados() {
   const crearNuevaEvaluacion = async e => {
     e.preventDefault()
 
-    const { id_curso, id_desafio, fecha_aplicacion, anio } = nuevaEvaluacion
+    const { id_curso, id_desafio, fecha_aplicacion } = nuevaEvaluacion
 
     if (!id_curso || !id_desafio || !fecha_aplicacion) {
       toast.error('Complete todos los campos')
@@ -143,7 +142,7 @@ export function useRegistroResultados() {
     setCreandoEvaluacion(true)
 
     try {
-      await crearEvaluacion({ id_curso, id_desafio, fecha_aplicacion, anio: Number(anio) })
+      await crearEvaluacion({ id_curso, id_desafio, fecha_aplicacion })
       setNuevaEvaluacion(evaluacionVacia)
       await cargarDatos()
       toast.exito('Evaluación creada correctamente')
@@ -219,7 +218,6 @@ export function useRegistroResultados() {
       limpio.delete('evaluacion')
       setSearchParams(limpio, { replace: true })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cargando, evaluaciones, searchParams, setSearchParams])
 
   const evaluacionSeleccionada = evaluaciones.find(item => item.id === evaluacion)
@@ -242,9 +240,13 @@ export function useRegistroResultados() {
   const calcularNivel = puntaje => calcularNivelBase(desafioSeleccionado, puntaje)
   const tieneResultado = idEstudiante => tieneResultadoBase(desafioSeleccionado, resultados[idEstudiante] || {})
 
-  /**
-   * Arma el documento que se guardará en Firestore para un estudiante.
-   */
+  const errorResultado = idEstudiante =>
+    tieneResultado(idEstudiante)
+      ? validarResultadoBase(desafioSeleccionado, resultados[idEstudiante] || {})
+      : null
+
+  const estudiantesConError = estudiantes.filter(estudiante => errorResultado(estudiante.id))
+
   const construirDatos = (idEstudiante, resultado) => {
     const puntaje = calcularPuntaje(idEstudiante)
 
@@ -280,6 +282,16 @@ export function useRegistroResultados() {
       return
     }
 
+    if (estudiantesConError.length) {
+      const primero = estudiantesConError[0]
+      toast.error(
+        estudiantesConError.length === 1
+          ? `${primero.nombre} ${primero.apellido}: ${errorResultado(primero.id)}`
+          : `Hay ${estudiantesConError.length} resultados con valores fuera de rango. Corríjalos antes de guardar.`
+      )
+      return
+    }
+
     const aGuardar = []
     const aEliminar = []
 
@@ -287,13 +299,7 @@ export function useRegistroResultados() {
       const resultado = resultados[estudiante.id] || {}
       const idExistente = resultado.id || null
 
-      // Un estudiante sin datos ingresados NO se guarda: antes quedaba
-      // registrado con puntaje 0 y nivel "Insuficiente", lo que hacía que
-      // Pendientes lo contara como completo y que Reportes bajara el
-      // promedio del curso con ceros que nunca se rindieron.
       if (!tieneResultado(estudiante.id)) {
-        // Si además tenía un resultado guardado antes y ahora se vació el
-        // formulario, se elimina para que el dato no quede desactualizado.
         if (idExistente) aEliminar.push(idExistente)
         return
       }
@@ -309,7 +315,6 @@ export function useRegistroResultados() {
     setGuardando(true)
 
     try {
-      // Una sola escritura atómica en vez de un await por estudiante.
       await guardarResultadosLote(aGuardar, aEliminar)
 
       await cargarDatos()
@@ -362,6 +367,8 @@ export function useRegistroResultados() {
     cambiarResultado,
     calcularPuntaje,
     calcularNivel,
+    errorResultado,
+    hayErrores: estudiantesConError.length > 0,
     guardarResultados
   }
 }
