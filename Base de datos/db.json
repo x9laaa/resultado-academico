@@ -1,0 +1,643 @@
+{
+  "proyecto": "resultado-academico",
+  "fechaExportacion": "2026-09-21T19:30:20.294Z",
+  "colecciones": {
+    "cursos": [
+      {
+        "id": "PNuJ37yDA09Bjd7hveKU",
+        "nombre_curso": "3° Básico",
+        "profesores": [
+          "ULqpG110I9XrxrDerhuIOFE7uD83"
+        ]
+      },
+      {
+        "id": "fv8feBlu9fRfJDcUxpEA",
+        "nombre_curso": "1° Básico",
+        "profesores": [
+          "JbAablUQaxPkv2RuUBSRUEWbAkX2",
+          "ULqpG110I9XrxrDerhuIOFE7uD83",
+          "bnYGLQnu6JRIjVq3nQoMO8UUYkL2"
+        ]
+      },
+      {
+        "id": "x2lkSfoA7xioQbLG5VK7",
+        "profesores": [
+          "pkKS2m46iSX56NwDwJW6425Fd312"
+        ],
+        "nombre_curso": "2° Básico"
+      }
+    ],
+    "desafios": [
+      {
+        "id": "7FoaqdVNYqI5CTQr6Q1X",
+        "etiquetas": [
+          "Día 1",
+          "Día 2",
+          "Día 3",
+          "Día 4"
+        ],
+        "max_reflexionar": null,
+        "puntaje_maximo": 10,
+        "logrado_desde": 6,
+        "tipo": "Matemática",
+        "nombre": "mate 3ºbasico",
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1789043484,
+          "nanoseconds": 0
+        },
+        "max_interpretar": null,
+        "campos": [
+          "dia1",
+          "dia2",
+          "dia3",
+          "dia4"
+        ],
+        "cantidad_dias": 4,
+        "max_localizar": null,
+        "adecuado_desde": 3
+      },
+      {
+        "id": "AZQvr5bjIQAMES1u8dxD",
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1789043990,
+          "nanoseconds": 0
+        },
+        "nombre": "Lenguaje 3º basico",
+        "logrado_desde": 7,
+        "tipo": "Lenguaje",
+        "max_reflexionar": 4,
+        "etiquetas": [
+          "Localizar",
+          "Interpretar/Inferir",
+          "Reflexionar"
+        ],
+        "puntaje_maximo": 11,
+        "max_localizar": 3,
+        "adecuado_desde": 3,
+        "cantidad_dias": null,
+        "max_interpretar": 4,
+        "campos": [
+          "localizar",
+          "interpretar",
+          "reflexionar"
+        ]
+      },
+      {
+        "id": "WR6YHLJxeJ8OCkJLoMhC",
+        "tipo": "Matemática",
+        "adecuado_desde": 4,
+        "max_interpretar": null,
+        "campos": [
+          "dia1",
+          "dia2",
+          "dia3"
+        ],
+        "logrado_desde": 9,
+        "cantidad_dias": 3,
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1788020280,
+          "nanoseconds": 486000000
+        },
+        "etiquetas": [
+          "Día 1",
+          "Día 2",
+          "Día 3"
+        ],
+        "max_reflexionar": null,
+        "max_localizar": null,
+        "puntaje_maximo": 14,
+        "nombre": "Mate para todos"
+      },
+      {
+        "id": "vXkN8CNMaImnX1vh7264",
+        "etiquetas": [
+          "Palabras leídas"
+        ],
+        "logrado_desde": 157,
+        "adecuado_desde": 79,
+        "nombre": "lectura cuarto",
+        "max_reflexionar": null,
+        "max_localizar": null,
+        "puntaje_maximo": 250,
+        "campos": [
+          "palabras"
+        ],
+        "tipo": "Velocidad Lectora",
+        "cantidad_dias": null,
+        "max_interpretar": null,
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1788021588,
+          "nanoseconds": 842000000
+        }
+      },
+      {
+        "id": "xMcOWF5zytKKXGoEWxzZ",
+        "logrado_desde": 7,
+        "max_interpretar": 4,
+        "adecuado_desde": 4,
+        "campos": [
+          "localizar",
+          "interpretar",
+          "reflexionar"
+        ],
+        "etiquetas": [
+          "Localizar",
+          "Interpretar/Inferir",
+          "Reflexionar"
+        ],
+        "max_reflexionar": 4,
+        "nombre": "le",
+        "max_localizar": 3,
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1788020347,
+          "nanoseconds": 819000000
+        },
+        "tipo": "Lenguaje",
+        "cantidad_dias": null,
+        "puntaje_maximo": 11
+      }
+    ],
+    "estudiantes": [
+      {
+        "id": "5N3dAgKxNYiKzUchNn3f",
+        "id_curso": "PNuJ37yDA09Bjd7hveKU",
+        "nombre": "Frida ",
+        "apellido": "Carreño"
+      },
+      {
+        "id": "67MiV5JvOkSHQVdFL5pA",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "apellido": "carreno",
+        "nombre": "martina"
+      },
+      {
+        "id": "IZXGradjroBzapLKWYsW",
+        "id_curso": "x2lkSfoA7xioQbLG5VK7",
+        "nombre": "agustin",
+        "apellido": "villegas"
+      },
+      {
+        "id": "TYdhG3V0L6ypJ7efyn25",
+        "apellido": "olguin",
+        "nombre": "brayan ",
+        "id_curso": "x2lkSfoA7xioQbLG5VK7"
+      },
+      {
+        "id": "esOS7qZ2yoCpyJKRqgmV",
+        "apellido": "jimenez",
+        "nombre": "benjamin",
+        "id_curso": "x2lkSfoA7xioQbLG5VK7"
+      },
+      {
+        "id": "gCKwLtfD0tpep70fP0zR",
+        "id_curso": "PNuJ37yDA09Bjd7hveKU",
+        "nombre": "Diego",
+        "apellido": "Morales"
+      },
+      {
+        "id": "ofNyea6CGjYpPyaaAeR7",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "nombre": "isabella ",
+        "apellido": "dote"
+      },
+      {
+        "id": "y6Ev57DkAoicpOcwGxvS",
+        "nombre": "frida ",
+        "apellido": "careno",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA"
+      }
+    ],
+    "evaluaciones": [
+      {
+        "id": "GhDQndOEMr8ylIophOFl",
+        "anio": 2026,
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1788041847,
+          "nanoseconds": 225000000
+        },
+        "fecha_aplicacion": "2026-07-13",
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA"
+      },
+      {
+        "id": "JIa9lqquBlnNvgnEhVlm",
+        "id_curso": "x2lkSfoA7xioQbLG5VK7",
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1789407657,
+          "nanoseconds": 334000000
+        },
+        "id_desafio": "vXkN8CNMaImnX1vh7264",
+        "fecha_aplicacion": "2026-08-31"
+      },
+      {
+        "id": "P2YRaSaUWh2KbdDjJz76",
+        "anio": 2026,
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1788041861,
+          "nanoseconds": 466000000
+        },
+        "fecha_aplicacion": "2026-09-07",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC"
+      },
+      {
+        "id": "TQLeDaA0HWxaqex1nBRN",
+        "id_desafio": "vXkN8CNMaImnX1vh7264",
+        "fecha_aplicacion": "2026-08-29",
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1788022084,
+          "nanoseconds": 409000000
+        },
+        "anio": 2026,
+        "id_curso": "fv8feBlu9fRfJDcUxpEA"
+      },
+      {
+        "id": "ahqRNrjshLCCbPZ7vSQT",
+        "anio": 2026,
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1789235638,
+          "nanoseconds": 492000000
+        },
+        "fecha_aplicacion": "2026-09-21",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA"
+      },
+      {
+        "id": "kQqJ03G5dEjLmNJJcvuW",
+        "fecha_aplicacion": "2026-08-30",
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1788106344,
+          "nanoseconds": 10000000
+        },
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "anio": 2026,
+        "id_curso": "fv8feBlu9fRfJDcUxpEA"
+      },
+      {
+        "id": "lD3do9oHI7T9pwy8sc09",
+        "id_desafio": "7FoaqdVNYqI5CTQr6Q1X",
+        "fecha_aplicacion": "2026-09-11",
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1789390173,
+          "nanoseconds": 917000000
+        },
+        "id_curso": "PNuJ37yDA09Bjd7hveKU"
+      },
+      {
+        "id": "lWeesWr3AvhBu8OH6qsm",
+        "id_desafio": "vXkN8CNMaImnX1vh7264",
+        "fecha_aplicacion": "2026-09-14",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1789229366,
+          "nanoseconds": 650000000
+        },
+        "anio": 2026
+      },
+      {
+        "id": "phoFlrTdAUw2YIxZxZzk",
+        "fecha_creacion": {
+          "type": "firestore/timestamp/1.0",
+          "seconds": 1789407641,
+          "nanoseconds": 808000000
+        },
+        "fecha_aplicacion": "2026-09-09",
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "id_curso": "x2lkSfoA7xioQbLG5VK7"
+      }
+    ],
+    "resultados": [
+      {
+        "id": "3XgiMM251fFUr4qCl0D7",
+        "palabras": 180,
+        "id_desafio": "vXkN8CNMaImnX1vh7264",
+        "puntaje_maximo": 250,
+        "id_evaluacion": "TQLeDaA0HWxaqex1nBRN",
+        "id_estudiante": "y6Ev57DkAoicpOcwGxvS",
+        "nivel_desempeno": "Logrado",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "puntaje_obtenido": 180
+      },
+      {
+        "id": "77x3RUCvJgLIP5YXfojA",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "dia2": 1,
+        "id_estudiante": "67MiV5JvOkSHQVdFL5pA",
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "nivel_desempeno": "Insuficiente",
+        "dia3": 1,
+        "puntaje_obtenido": 3,
+        "dia1": 1,
+        "id_evaluacion": "ahqRNrjshLCCbPZ7vSQT",
+        "puntaje_maximo": 14
+      },
+      {
+        "id": "Few4wJmPUWktGJE4ws0x",
+        "puntaje_maximo": 14,
+        "id_estudiante": "67MiV5JvOkSHQVdFL5pA",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "dia2": 1,
+        "nivel_desempeno": "Insuficiente",
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "id_evaluacion": "GhDQndOEMr8ylIophOFl",
+        "dia1": 1,
+        "dia3": 1,
+        "puntaje_obtenido": 3
+      },
+      {
+        "id": "GZ32yPzXhpTWQQmMJFGn",
+        "puntaje_obtenido": 123,
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "puntaje_maximo": 250,
+        "id_estudiante": "67MiV5JvOkSHQVdFL5pA",
+        "palabras": 123,
+        "nivel_desempeno": "Adecuado",
+        "id_desafio": "vXkN8CNMaImnX1vh7264",
+        "id_evaluacion": "TQLeDaA0HWxaqex1nBRN"
+      },
+      {
+        "id": "HudoQ1C0vYmEJ7kRqbSB",
+        "dia2": 4,
+        "nivel_desempeno": "Logrado",
+        "id_evaluacion": "phoFlrTdAUw2YIxZxZzk",
+        "puntaje_maximo": 14,
+        "id_curso": "x2lkSfoA7xioQbLG5VK7",
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "id_estudiante": "esOS7qZ2yoCpyJKRqgmV",
+        "puntaje_obtenido": 12,
+        "dia1": 2,
+        "dia3": 6
+      },
+      {
+        "id": "I31DiSK6e3wQ8cEczKYC",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "puntaje_obtenido": 12,
+        "puntaje_maximo": 14,
+        "dia2": 4,
+        "id_estudiante": "y6Ev57DkAoicpOcwGxvS",
+        "dia3": 4,
+        "nivel_desempeno": "Logrado",
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "dia1": 4,
+        "id_evaluacion": "GhDQndOEMr8ylIophOFl"
+      },
+      {
+        "id": "LJGfbdt8l06bGyXCso20",
+        "dia2": 1,
+        "id_estudiante": "y6Ev57DkAoicpOcwGxvS",
+        "nivel_desempeno": "Insuficiente",
+        "puntaje_maximo": 14,
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "puntaje_obtenido": 3,
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "id_evaluacion": "kQqJ03G5dEjLmNJJcvuW",
+        "dia3": 1,
+        "dia1": 1
+      },
+      {
+        "id": "QcyuxaXzBgfqAyN8jgvm",
+        "id_estudiante": "67MiV5JvOkSHQVdFL5pA",
+        "dia1": 2,
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "dia3": 4,
+        "nivel_desempeno": "Logrado",
+        "id_evaluacion": "kQqJ03G5dEjLmNJJcvuW",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "dia2": 4,
+        "puntaje_maximo": 14,
+        "puntaje_obtenido": 10
+      },
+      {
+        "id": "Rn5v8IWFhcAb2snarv3O",
+        "dia4": 0,
+        "dia1": 2,
+        "id_curso": "PNuJ37yDA09Bjd7hveKU",
+        "id_estudiante": "gCKwLtfD0tpep70fP0zR",
+        "dia3": 2,
+        "nivel_desempeno": "Adecuado",
+        "id_desafio": "7FoaqdVNYqI5CTQr6Q1X",
+        "dia2": 1,
+        "puntaje_maximo": 10,
+        "id_evaluacion": "lD3do9oHI7T9pwy8sc09",
+        "puntaje_obtenido": 5
+      },
+      {
+        "id": "S3OnJcBGsL42NT6jg93x",
+        "dia1": 1,
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "nivel_desempeno": "Insuficiente",
+        "dia3": 1,
+        "puntaje_maximo": 14,
+        "id_estudiante": "ofNyea6CGjYpPyaaAeR7",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "id_evaluacion": "kQqJ03G5dEjLmNJJcvuW",
+        "puntaje_obtenido": 3,
+        "dia2": 1
+      },
+      {
+        "id": "U9AsD4atkM5yKKEJsRFO",
+        "id_desafio": "vXkN8CNMaImnX1vh7264",
+        "nivel_desempeno": "Adecuado",
+        "puntaje_obtenido": 155,
+        "palabras": 155,
+        "puntaje_maximo": 250,
+        "id_curso": "x2lkSfoA7xioQbLG5VK7",
+        "id_evaluacion": "JIa9lqquBlnNvgnEhVlm",
+        "id_estudiante": "TYdhG3V0L6ypJ7efyn25"
+      },
+      {
+        "id": "UTL8HAdTg9SxTMJxzzln",
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "puntaje_maximo": 14,
+        "dia3": 1,
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "nivel_desempeno": "Adecuado",
+        "dia1": 1,
+        "id_estudiante": "67MiV5JvOkSHQVdFL5pA",
+        "puntaje_obtenido": 4,
+        "dia2": 2,
+        "id_evaluacion": "P2YRaSaUWh2KbdDjJz76"
+      },
+      {
+        "id": "YwWEiUySCFrLLzVXXYhq",
+        "dia2": 3,
+        "puntaje_maximo": 14,
+        "id_estudiante": "IZXGradjroBzapLKWYsW",
+        "nivel_desempeno": "Adecuado",
+        "puntaje_obtenido": 8,
+        "dia3": 3,
+        "id_curso": "x2lkSfoA7xioQbLG5VK7",
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "dia1": 2,
+        "id_evaluacion": "phoFlrTdAUw2YIxZxZzk"
+      },
+      {
+        "id": "ZCfcXiEltq57lxuNlael",
+        "palabras": 55,
+        "nivel_desempeno": "Insuficiente",
+        "id_estudiante": "esOS7qZ2yoCpyJKRqgmV",
+        "id_curso": "x2lkSfoA7xioQbLG5VK7",
+        "puntaje_maximo": 250,
+        "id_evaluacion": "JIa9lqquBlnNvgnEhVlm",
+        "puntaje_obtenido": 55,
+        "id_desafio": "vXkN8CNMaImnX1vh7264"
+      },
+      {
+        "id": "mcSobkfPEy9Y0mT9qerW",
+        "id_estudiante": "y6Ev57DkAoicpOcwGxvS",
+        "puntaje_obtenido": 12,
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "puntaje_maximo": 14,
+        "dia2": 5,
+        "dia3": 4,
+        "id_evaluacion": "P2YRaSaUWh2KbdDjJz76",
+        "nivel_desempeno": "Logrado",
+        "dia1": 3,
+        "id_curso": "fv8feBlu9fRfJDcUxpEA"
+      },
+      {
+        "id": "p5pcH6GLfrC6z2TYHash",
+        "puntaje_obtenido": 160,
+        "id_desafio": "vXkN8CNMaImnX1vh7264",
+        "id_curso": "x2lkSfoA7xioQbLG5VK7",
+        "puntaje_maximo": 250,
+        "nivel_desempeno": "Logrado",
+        "id_evaluacion": "JIa9lqquBlnNvgnEhVlm",
+        "palabras": 160,
+        "id_estudiante": "IZXGradjroBzapLKWYsW"
+      },
+      {
+        "id": "qegVBoDbeGx8GTgZAOG9",
+        "puntaje_maximo": 14,
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "dia2": 1,
+        "id_estudiante": "ofNyea6CGjYpPyaaAeR7",
+        "dia3": 1,
+        "nivel_desempeno": "Insuficiente",
+        "dia1": 1,
+        "puntaje_obtenido": 3,
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "id_evaluacion": "GhDQndOEMr8ylIophOFl"
+      },
+      {
+        "id": "sR0BR0mcvSvmVT8VuATc",
+        "nivel_desempeno": "Adecuado",
+        "id_evaluacion": "phoFlrTdAUw2YIxZxZzk",
+        "puntaje_maximo": 14,
+        "dia1": 5,
+        "dia3": 2,
+        "puntaje_obtenido": 8,
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "id_estudiante": "TYdhG3V0L6ypJ7efyn25",
+        "id_curso": "x2lkSfoA7xioQbLG5VK7",
+        "dia2": 1
+      },
+      {
+        "id": "vuCVoTLzBQsebL0R39fq",
+        "dia2": 2,
+        "id_estudiante": "5N3dAgKxNYiKzUchNn3f",
+        "id_desafio": "7FoaqdVNYqI5CTQr6Q1X",
+        "id_curso": "PNuJ37yDA09Bjd7hveKU",
+        "puntaje_maximo": 10,
+        "dia4": 2,
+        "id_evaluacion": "lD3do9oHI7T9pwy8sc09",
+        "dia1": 2,
+        "nivel_desempeno": "Logrado",
+        "puntaje_obtenido": 8,
+        "dia3": 2
+      },
+      {
+        "id": "wiLzE2czoqvFgpjrtGjF",
+        "id_desafio": "WR6YHLJxeJ8OCkJLoMhC",
+        "dia2": 1,
+        "id_curso": "fv8feBlu9fRfJDcUxpEA",
+        "puntaje_maximo": 14,
+        "id_evaluacion": "P2YRaSaUWh2KbdDjJz76",
+        "dia3": 1,
+        "puntaje_obtenido": 3,
+        "dia1": 1,
+        "nivel_desempeno": "Insuficiente",
+        "id_estudiante": "ofNyea6CGjYpPyaaAeR7"
+      }
+    ],
+    "usuarios": [
+      {
+        "id": "3BIMwHJh16WGFuuvRdANkrO7La72",
+        "correo": "x9laaa@gmail.com",
+        "apellido": "Carreño",
+        "nombre": "Alex",
+        "rol": "admin"
+      },
+      {
+        "id": "4RjTYSmD2egMssMzdt4nXNiThJf2",
+        "uid": "4RjTYSmD2egMssMzdt4nXNiThJf2",
+        "rol": "profesor",
+        "correo": "alexbkn619@hotmail.com",
+        "nombre": "alex",
+        "apellido": "carreño"
+      },
+      {
+        "id": "FJ8vnzbSw1gWaakFwFOHZr1kUs72",
+        "apellido": "Carreno",
+        "correo": "violeta@gmail.com",
+        "nombre": "Violeta",
+        "rol": "utp",
+        "uid": "FJ8vnzbSw1gWaakFwFOHZr1kUs72"
+      },
+      {
+        "id": "JbAablUQaxPkv2RuUBSRUEWbAkX2",
+        "rol": "profesor",
+        "nombre": "karina",
+        "uid": "JbAablUQaxPkv2RuUBSRUEWbAkX2",
+        "correo": "karina@gmail.com",
+        "apellido": "Pino"
+      },
+      {
+        "id": "ULqpG110I9XrxrDerhuIOFE7uD83",
+        "apellido": "Carreño",
+        "nombre": "malala",
+        "rol": "profesor",
+        "correo": "malala@gmail.com",
+        "uid": "ULqpG110I9XrxrDerhuIOFE7uD83"
+      },
+      {
+        "id": "bnYGLQnu6JRIjVq3nQoMO8UUYkL2",
+        "correo": "alexx@gmail.com",
+        "nombre": "alex",
+        "apellido": "carreno",
+        "rol": "profesor",
+        "uid": "bnYGLQnu6JRIjVq3nQoMO8UUYkL2"
+      },
+      {
+        "id": "pkKS2m46iSX56NwDwJW6425Fd312",
+        "rol": "profesor",
+        "nombre": "Diego",
+        "correo": "diego@gmail.com",
+        "uid": "pkKS2m46iSX56NwDwJW6425Fd312",
+        "apellido": "Roman"
+      },
+      {
+        "id": "zLVdQl9w84XTC7BsCt7dHJKBCW13",
+        "apellido": "Perez",
+        "nombre": "Juan Alex",
+        "rol": "utp",
+        "correo": "juan@gmail.com",
+        "uid": "zLVdQl9w84XTC7BsCt7dHJKBCW13"
+      }
+    ]
+  },
+  "errores": []
+}
